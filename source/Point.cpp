@@ -12,9 +12,9 @@ Point::Point(float x, float y)
 	pos = prevPos = initPos = Vec2(x, y);
 }
 
-void Point::AddStick(Stick* stick, int index)
+void Point::AddStick(Stick* stick)
 {
-	sticks[index] = stick;
+	sticks.push_back(stick);
 }
 
 void Point::SetPosition(float x, float y)
@@ -28,21 +28,22 @@ void Point::Pin()
 	isPinned = true;
 }
 
-void Point::Update(float deltaTime, float drag, const Vec2& acceleration, float elasticity, InputHandler* inputHandler, int windowWidth, int windowHeight)
+float Point::UpdateSelection(InputHandler* inputHandler)
 {
 	Vec2 cursorToPosDir = pos - inputHandler->GetMousePosition();
-	float cursorToPosDist = cursorToPosDir.x * cursorToPosDir.x + cursorToPosDir.y * cursorToPosDir.y;
+	float cursorToPosDistSquared = cursorToPosDir.LengthSquared();
 	float cursorSize = inputHandler->GetCursorSize();
-	isSelected = cursorToPosDist < cursorSize * cursorSize;
+	isSelected = cursorToPosDistSquared < cursorSize * cursorSize;
 
-	for (Stick* stick : sticks)
+	if (isSelected)
 	{
-		if (stick != nullptr)
-		{
-			stick->SetIsSelected(isSelected);
-		}
+		return cursorToPosDistSquared;
 	}
+	return -1.f;
+}
 
+void Point::Update(float deltaTime, float drag, const Vec2& acceleration, float elasticity, InputHandler* inputHandler, int windowWidth, int windowHeight)
+{
 	if (inputHandler->GetLeftMouseButtonDown() && isSelected)
 	{
 		Vec2 difference = inputHandler->GetMousePosition() - inputHandler->GetPreviousMousePosition();

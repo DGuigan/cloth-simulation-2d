@@ -17,3 +17,17 @@ void InputHandler::UpdateMousePosition(int x, int y)
 	pos.x = static_cast<float>(x);
 	pos.y = static_cast<float>(y);
 }
+
+void InputHandler::SetLeftMouseButtonDown(bool isDown)
+{
+	leftMouseButtonDown = isDown;
+	if (isDown)
+	{
+		leftMouseButtonClickedThisFrame = true;
+	}
+}
+
+void InputHandler::OnFrameStart()
+{
+	leftMouseButtonClickedThisFrame = false;
+}

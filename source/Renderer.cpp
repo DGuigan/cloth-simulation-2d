@@ -57,13 +57,21 @@ void Renderer::DrawPoint(int x, int y, Uint32 color) const
 {
 	SDL_SetRenderDrawColor(renderer, color >> 16, color >> 8, color, 255);
 	SDL_RenderDrawPoint(renderer, x, y);
+
+	SDL_FRect rect;
+	static const float halfLength = 2.5f;
+	static const float length = halfLength * 2.f;
+	rect.x = x - halfLength;
+	rect.y = y - halfLength;
+	rect.w = length;
+	rect.h = length;
+	SDL_RenderDrawRectF(renderer, &rect);
 }
 
 void Renderer::DrawPoint(Vec2 position, Uint32 color) const
 {
 	DrawPoint(static_cast<int>(position.x), static_cast<int>(position.y), color);
 }
-
 
 Renderer::~Renderer()
 {

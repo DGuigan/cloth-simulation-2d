@@ -16,7 +16,16 @@ void Application::Setup(int clothWidth, int clothHeight, int clothSpacing)
 	int startX = static_cast<int>((renderer->GetWindowWidth() - clothWidth) * 0.5f);
 	int startY = static_cast<int>(renderer->GetWindowHeight() * 0.1f);
 
-	cloth = new Cloth(numColumns, numRows, clothSpacing, startX, startY);
+	if (applicationMode == ApplicationMode::Simulate)
+	{
+		// build a default cloth if immediately simulating
+		cloth = new Cloth(numColumns, numRows, clothSpacing, startX, startY);
+	}
+	else if (applicationMode == ApplicationMode::Design)
+	{
+		// empty cloth to draw on
+		cloth = new Cloth();
+	}
 
 	lastUpdateTime = SDL_GetTicks();
 }
@@ -24,6 +33,9 @@ void Application::Setup(int clothWidth, int clothHeight, int clothSpacing)
 void Application::Input()
 {
 	SDL_Event event;
+
+	inputHandler->OnFrameStart();
+
 	while (SDL_PollEvent(&event))
 	{
 		switch (event.type)
@@ -50,6 +62,41 @@ void Application::Input()
 			case (SDLK_2):
 			{
 				drawSticks = !drawSticks;
+				break;
+			}
+			case (SDLK_RETURN):
+			{
+				if (applicationMode != ApplicationMode::Simulate)
+				{
+					applicationMode = ApplicationMode::Simulate;
+				}
+				break;
+			}
+			case (SDLK_LCTRL):
+			{
+				inputHandler->SetLeftCtrlDown(true);
+				break;
+			}
+			case (SDLK_LSHIFT):
+			{
+				inputHandler->SetLeftShiftDown(true);
+				break;
+			}
+			}
+			break;
+		}
+		case SDL_KEYUP:
+		{
+			switch (event.key.keysym.sym)
+			{
+			case (SDLK_LCTRL):
+			{
+				inputHandler->SetLeftCtrlDown(false);
+				break;
+			}
+			case (SDLK_LSHIFT):
+			{
+				inputHandler->SetLeftShiftDown(false);
 				break;
 			}
 			}
@@ -111,7 +158,7 @@ void Application::Update()
 	Uint32 currentTime = SDL_GetTicks();
 	float deltaTime = (currentTime - lastUpdateTime) / 1000.0f;
 
-	cloth->Update(renderer, inputHandler, deltaTime);
+	cloth->Update(applicationMode, inputHandler, renderer, deltaTime);
 
 	lastUpdateTime = currentTime;
 }

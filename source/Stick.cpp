@@ -38,15 +38,12 @@ void Stick::Draw(const Renderer* renderer) const
 	Vec2 p0Pos = p0.GetPosition();
 	Vec2 p1Pos = p1.GetPosition();
 
-	renderer->DrawLine(p0Pos, p1Pos, isSelected ? colorWhenSelected : color);
+	bool hasSelectedPoint = p0.GetIsSelected() || p1.GetIsSelected();
+
+	renderer->DrawLine(p0Pos, p1Pos, hasSelectedPoint ? colorWhenSelected : color);
 }
 
 void Stick::Break()
 {
 	isActive = false;
-}
-
-void Stick::SetIsSelected(bool value)
-{
-	isSelected = value;
 }

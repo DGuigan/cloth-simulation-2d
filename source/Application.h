@@ -3,6 +3,8 @@
 #include <vector>
 #include <SDL.h>
 
+#include "Enums.h"
+
 class InputHandler;
 class Renderer;
 class Cloth;
@@ -15,10 +17,13 @@ private:
 	Cloth* cloth = nullptr;
 
 	bool isRunning = false;
-	bool drawPoints = false;
+	bool drawPoints = true;
 	bool drawSticks = true;
 
 	Uint32 lastUpdateTime;
+
+	ApplicationMode applicationMode = ApplicationMode::Design;
+
 public:
 	Application() = default;
 	~Application() = default;

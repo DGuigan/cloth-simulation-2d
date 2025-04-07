@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL.h>
+#include <vector>
 
 #include "Vec2.h"
 
@@ -11,7 +12,7 @@ class Stick;
 class Point
 {
 private:
-	Stick* sticks[2] = { nullptr };
+	std::vector<Stick*> sticks = { nullptr };
 
 	Vec2 pos;
 	Vec2 prevPos;
@@ -32,13 +33,16 @@ public:
 	Point(float x, float y);
 	~Point() = default;
 
-	void AddStick(Stick* stick, int index);
+	void AddStick(Stick* stick);
 
 	const Vec2& GetPosition() const { return pos; }
 	void SetPosition(float x, float y);
 
+	bool GetIsSelected() const { return isSelected; }
+
 	void Pin();
 
-	void Update(float deltaTime, float drag, const Vec2& acceleration, float elasticity, InputHandler* mouse, int windowWidth, int windowHeight);
+	float UpdateSelection(InputHandler* inputHandler);
+	void Update(float deltaTime, float drag, const Vec2& acceleration, float elasticity, InputHandler* inputHandler, int windowWidth, int windowHeight);
 	void Draw(const Renderer* renderer) const;
 };
