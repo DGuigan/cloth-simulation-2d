@@ -1,5 +1,8 @@
 #include <math.h>
 #include "Point.h"
+#include "Stick.h"
+#include "InputHandler.h"
+#include "Renderer.h"
 
 Point::Point(int x, int y)
 	: Point(static_cast<float>(x), static_cast<float>(y)) {}
@@ -25,11 +28,11 @@ void Point::Pin()
 	isPinned = true;
 }
 
-void Point::Update(float deltaTime, float drag, const Vec2& acceleration, float elasticity, Mouse* mouse, int windowWidth, int windowHeight)
+void Point::Update(float deltaTime, float drag, const Vec2& acceleration, float elasticity, InputHandler* inputHandler, int windowWidth, int windowHeight)
 {
-	Vec2 cursorToPosDir = pos - mouse->GetPosition();
+	Vec2 cursorToPosDir = pos - inputHandler->GetMousePosition();
 	float cursorToPosDist = cursorToPosDir.x * cursorToPosDir.x + cursorToPosDir.y * cursorToPosDir.y;
-	float cursorSize = mouse->GetCursorSize();
+	float cursorSize = inputHandler->GetCursorSize();
 	isSelected = cursorToPosDist < cursorSize * cursorSize;
 
 	for (Stick* stick : sticks)
@@ -40,9 +43,9 @@ void Point::Update(float deltaTime, float drag, const Vec2& acceleration, float 
 		}
 	}
 
-	if (mouse->GetLeftButtonDown() && isSelected)
+	if (inputHandler->GetLeftMouseButtonDown() && isSelected)
 	{
-		Vec2 difference = mouse->GetPosition() - mouse->GetPreviousPosition();
+		Vec2 difference = inputHandler->GetMousePosition() - inputHandler->GetPreviousMousePosition();
 
 		if (difference.x > elasticity) difference.x = elasticity;
 		if (difference.y > elasticity) difference.y = elasticity;
@@ -52,7 +55,7 @@ void Point::Update(float deltaTime, float drag, const Vec2& acceleration, float 
 		prevPos = pos - difference;
 	}
 
-	if (mouse->GetRightMouseButton() && isSelected)
+	if (inputHandler->GetRightMouseButtonDown() && isSelected)
 	{
 		for (Stick* stick : sticks)
 		{
@@ -61,6 +64,7 @@ void Point::Update(float deltaTime, float drag, const Vec2& acceleration, float 
 				stick->Break();
 			}
 		}
+		isActive = false;
 	}
 
 	if (isPinned) {
@@ -73,6 +77,16 @@ void Point::Update(float deltaTime, float drag, const Vec2& acceleration, float 
 	pos = newPos;
 
 	KeepInsideView(windowWidth, windowHeight);
+}
+
+void Point::Draw(const Renderer* renderer) const
+{
+	if (!isActive)
+	{
+		return;
+	}
+
+	renderer->DrawPoint(GetPosition(), isSelected ? colorWhenSelected : color);
 }
 
 void Point::KeepInsideView(int windowWidth, int windowHeight)

@@ -1,6 +1,7 @@
 #include <math.h>
 #include "Stick.h"
 #include "Point.h"
+#include "Renderer.h"
 
 Stick::Stick(Point& p0, Point& p1, int length)
 	: Stick(p0, p1, static_cast<float>(length)) {}

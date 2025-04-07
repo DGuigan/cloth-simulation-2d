@@ -59,6 +59,12 @@ void Renderer::DrawPoint(int x, int y, Uint32 color) const
 	SDL_RenderDrawPoint(renderer, x, y);
 }
 
+void Renderer::DrawPoint(Vec2 position, Uint32 color) const
+{
+	DrawPoint(static_cast<int>(position.x), static_cast<int>(position.y), color);
+}
+
+
 Renderer::~Renderer()
 {
 	SDL_DestroyRenderer(renderer);

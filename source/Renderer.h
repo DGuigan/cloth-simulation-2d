@@ -24,4 +24,5 @@ public:
 	void DrawLine(int x0, int y0, int x1, int y1, Uint32 color) const;
 	void DrawLine(Vec2 start, Vec2 end, Uint32 color) const;
 	void DrawPoint(int x, int y, Uint32 color) const;
+	void DrawPoint(Vec2 position, Uint32 color) const;
 };

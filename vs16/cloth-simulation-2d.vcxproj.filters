@@ -26,10 +26,10 @@
     <ClCompile Include="..\source\Point.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\Mouse.cpp">
+    <ClCompile Include="..\source\Cloth.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\Cloth.cpp">
+    <ClCompile Include="..\source\InputHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -49,10 +49,10 @@
     <ClInclude Include="..\source\Point.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\Mouse.h">
+    <ClInclude Include="..\source\Cloth.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\Cloth.h">
+    <ClInclude Include="..\source\InputHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

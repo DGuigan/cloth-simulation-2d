@@ -1,10 +1,13 @@
 #include <iostream>
 #include "Application.h"
+#include "Renderer.h"
+#include "InputHandler.h"
+#include "Cloth.h"
 
 void Application::Setup(int clothWidth, int clothHeight, int clothSpacing)
 {
 	renderer = new Renderer();
-	mouse = new Mouse();
+	inputHandler = new InputHandler();
 
 	isRunning = renderer->Setup();
 
@@ -32,9 +35,23 @@ void Application::Input()
 		}
 		case SDL_KEYDOWN:
 		{
-			if (event.key.keysym.sym == SDLK_ESCAPE)
+			switch (event.key.keysym.sym)
+			{
+			case (SDLK_ESCAPE):
 			{
 				isRunning = false;
+				break;
+			}
+			case (SDLK_1):
+			{
+				drawPoints = !drawPoints;
+				break;
+			}
+			case (SDLK_2):
+			{
+				drawSticks = !drawSticks;
+				break;
+			}
 			}
 			break;
 		}
@@ -42,34 +59,34 @@ void Application::Input()
 		{
 			int x = event.motion.x;
 			int y = event.motion.y;
-			mouse->UpdatePosition(x, y);
+			inputHandler->UpdateMousePosition(x, y);
 			break;
 		}
 		case SDL_MOUSEBUTTONDOWN:
 		{
 			int x, y;
 			SDL_GetMouseState(&x, &y);
-			mouse->UpdatePosition(x, y);
+			inputHandler->UpdateMousePosition(x, y);
 
-			if (!mouse->GetLeftButtonDown() && event.button.button == SDL_BUTTON_LEFT)
+			if (!inputHandler->GetLeftMouseButtonDown() && event.button.button == SDL_BUTTON_LEFT)
 			{
-				mouse->SetLeftMouseButton(true);
+				inputHandler->SetLeftMouseButtonDown(true);
 			}
-			if (!mouse->GetRightMouseButton() && event.button.button == SDL_BUTTON_RIGHT)
+			if (!inputHandler->GetRightMouseButtonDown() && event.button.button == SDL_BUTTON_RIGHT)
 			{
-				mouse->SetRightMouseButton(true);
+				inputHandler->SetRightMouseButtonDown(true);
 			}
 			break;
 		}
 		case SDL_MOUSEBUTTONUP:
 		{
-			if (mouse->GetLeftButtonDown() && event.button.button == SDL_BUTTON_LEFT)
+			if (inputHandler->GetLeftMouseButtonDown() && event.button.button == SDL_BUTTON_LEFT)
 			{
-				mouse->SetLeftMouseButton(false);
+				inputHandler->SetLeftMouseButtonDown(false);
 			}
-			if (mouse->GetRightMouseButton() && event.button.button == SDL_BUTTON_RIGHT)
+			if (inputHandler->GetRightMouseButtonDown() && event.button.button == SDL_BUTTON_RIGHT)
 			{
-				mouse->SetRightMouseButton(false);
+				inputHandler->SetRightMouseButtonDown(false);
 			}
 			break;
 		}
@@ -77,11 +94,11 @@ void Application::Input()
 		{
 			if (event.wheel.y > 0)
 			{
-				mouse->IncreaseCursorSize(10);
+				inputHandler->IncreaseCursorSize(10);
 			}
 			else if (event.wheel.y < 0)
 			{
-				mouse->IncreaseCursorSize(-10);
+				inputHandler->IncreaseCursorSize(-10);
 			}
 			break;
 		}
@@ -94,7 +111,7 @@ void Application::Update()
 	Uint32 currentTime = SDL_GetTicks();
 	float deltaTime = (currentTime - lastUpdateTime) / 1000.0f;
 
-	cloth->Update(renderer, mouse, deltaTime);
+	cloth->Update(renderer, inputHandler, deltaTime);
 
 	lastUpdateTime = currentTime;
 }
@@ -103,7 +120,7 @@ void Application::Render() const
 {
 	renderer->ClearScreen(0xFF000816);
 
-	cloth->Draw(renderer);
+	cloth->Draw(renderer, drawPoints, drawSticks);
 
 	renderer->Render();
 }
@@ -116,7 +133,7 @@ bool Application::IsRunning() const
 
 void Application::Destroy()
 {
-	delete mouse;
+	delete inputHandler;
 	delete renderer;
 	delete cloth;
 }

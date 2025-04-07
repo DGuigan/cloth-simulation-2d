@@ -1,24 +1,28 @@
 #pragma once
 
 #include <vector>
-#include "Mouse.h"
-#include "Renderer.h"
-#include "Cloth.h"
+#include <SDL.h>
 
-struct Application 
+class InputHandler;
+class Renderer;
+class Cloth;
+
+struct Application
 {
 private:
 	Renderer* renderer = nullptr;
-	Mouse* mouse = nullptr;
+	InputHandler* inputHandler = nullptr;
 	Cloth* cloth = nullptr;
 
 	bool isRunning = false;
+	bool drawPoints = false;
+	bool drawSticks = true;
 
 	Uint32 lastUpdateTime;
 public:
 	Application() = default;
 	~Application() = default;
-	
+
 	bool IsRunning() const;
 
 	void Setup(int clothWidth, int clothHeight, int clothSpacing);

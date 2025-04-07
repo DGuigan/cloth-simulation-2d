@@ -1,9 +1,12 @@
 #pragma once
 
-#include "Renderer.h"
+#include <SDL.h>
+
 #include "Vec2.h"
-#include "Mouse.h"
-#include "Stick.h"
+
+class InputHandler;
+class Renderer;
+class Stick;
 
 class Point
 {
@@ -16,6 +19,10 @@ private:
 	bool isPinned = false;
 
 	bool isSelected = false;
+	bool isActive = true;
+
+	Uint32 color = 0xFF0048E3;
+	Uint32 colorWhenSelected = 0xFFCC0000;
 
 	void KeepInsideView(int width, int height);
 
@@ -32,5 +39,6 @@ public:
 
 	void Pin();
 
-	void Update(float deltaTime, float drag, const Vec2& acceleration, float elasticity, Mouse* mouse, int windowWidth, int windowHeight);
+	void Update(float deltaTime, float drag, const Vec2& acceleration, float elasticity, InputHandler* mouse, int windowWidth, int windowHeight);
+	void Draw(const Renderer* renderer) const;
 };

@@ -1,8 +1,10 @@
 #pragma once
 
-#include "Renderer.h"
+#include <SDL.h>
 
+class Renderer;
 class Point;
+
 class Stick
 {
 private:

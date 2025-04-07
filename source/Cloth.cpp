@@ -1,4 +1,8 @@
 #include "Cloth.h"
+#include "Stick.h"
+#include "Renderer.h"
+#include "Point.h"
+#include "InputHandler.h"
 
 Cloth::Cloth(int numColumns, int numRows, int spacing, int startX, int startY)
 {
@@ -35,12 +39,12 @@ Cloth::Cloth(int numColumns, int numRows, int spacing, int startX, int startY)
 	}
 }
 
-void Cloth::Update(Renderer* renderer, Mouse* mouse, float deltaTime)
+void Cloth::Update(Renderer* renderer, InputHandler* inputHandler, float deltaTime)
 {
 	for (int i = 0; i < points.size(); i++)
 	{
 		Point* point = points[i];
-		point->Update(deltaTime, drag, gravity, elasticity, mouse, renderer->GetWindowWidth(), renderer->GetWindowHeight());
+		point->Update(deltaTime, drag, gravity, elasticity, inputHandler, renderer->GetWindowWidth(), renderer->GetWindowHeight());
 	}
 
 	for (int i = 0; i < sticks.size(); i++)
@@ -49,11 +53,22 @@ void Cloth::Update(Renderer* renderer, Mouse* mouse, float deltaTime)
 	}
 }
 
-void Cloth::Draw(Renderer* renderer) const
+void Cloth::Draw(Renderer* renderer, const bool drawPoints, const bool drawSticks) const
 {
-	for (int i = 0; i < sticks.size(); i++)
+	if (drawPoints)
 	{
-		sticks[i]->Draw(renderer);
+		for (const Point* point : points)
+		{
+			point->Draw(renderer);
+		}
+	}
+
+	if (drawSticks)
+	{
+		for (const Stick* stick : sticks)
+		{
+			stick->Draw(renderer);
+		}
 	}
 }
 
