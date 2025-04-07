@@ -1,9 +1,9 @@
 #include "Cloth.h"
 
-Cloth::Cloth(int width, int height, int spacing, int startX, int startY)
+Cloth::Cloth(int numColumns, int numRows, int spacing, int startX, int startY)
 {
-	for (int y = 0; y <= height; y++) {
-		for (int x = 0; x <= width; x++)
+	for (int y = 0; y <= numRows; y++) {
+		for (int x = 0; x <= numColumns; x++)
 		{
 			Point* point = new Point(startX + x * spacing, startY + y * spacing);
 
@@ -18,7 +18,7 @@ Cloth::Cloth(int width, int height, int spacing, int startX, int startY)
 
 			if (y != 0)
 			{
-				Point* upPoint = points[x + (y - 1) * (width + 1)];
+				Point* upPoint = points[x + (y - 1) * (numColumns + 1)];
 				Stick* s = new Stick(*point, *upPoint, spacing);
 				upPoint->AddStick(s, 1);
 				point->AddStick(s, 1);
@@ -39,14 +39,14 @@ void Cloth::Update(Renderer* renderer, Mouse* mouse, float deltaTime)
 {
 	for (int i = 0; i < points.size(); i++)
 	{
-		Point* p = points[i];
-		p->Update(deltaTime, drag, gravity, elasticity, mouse, renderer->GetWindowWidth(), renderer->GetWindowHeight());
-	};
+		Point* point = points[i];
+		point->Update(deltaTime, drag, gravity, elasticity, mouse, renderer->GetWindowWidth(), renderer->GetWindowHeight());
+	}
 
 	for (int i = 0; i < sticks.size(); i++)
 	{
 		sticks[i]->Update();
-	};
+	}
 }
 
 void Cloth::Draw(Renderer* renderer) const

@@ -29,13 +29,15 @@ void Point::Update(float deltaTime, float drag, const Vec2& acceleration, float 
 	float cursorSize = mouse->GetCursorSize();
 	isSelected = cursorToPosDist < cursorSize * cursorSize;
 
-	for (Stick* stick : sticks) 
+	for (Stick* stick : sticks)
 	{
-		if(stick != nullptr)
+		if (stick != nullptr)
+		{
 			stick->SetIsSelected(isSelected);
+		}
 	}
 
-	if(mouse->GetLeftButtonDown() && isSelected)
+	if (mouse->GetLeftButtonDown() && isSelected)
 	{
 		Vec2 difference = mouse->GetPosition() - mouse->GetPreviousPosition();
 
@@ -47,12 +49,14 @@ void Point::Update(float deltaTime, float drag, const Vec2& acceleration, float 
 		prevPos = pos - difference;
 	}
 
-	if (mouse->GetRightMouseButton() && isSelected) 
+	if (mouse->GetRightMouseButton() && isSelected)
 	{
 		for (Stick* stick : sticks)
 		{
 			if (stick != nullptr)
+			{
 				stick->Break();
+			}
 		}
 	}
 

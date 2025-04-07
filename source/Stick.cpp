@@ -6,8 +6,10 @@ Stick::Stick(Point& p0, Point& p1, float length) : p0(p0), p1(p1), length(length
 
 void Stick::Update()
 {
-	if(!isActive)
+	if (!isActive)
+	{
 		return;
+	}
 
 	Vec2 p0Pos = p0.GetPosition();
 	Vec2 p1Pos = p1.GetPosition();
@@ -24,7 +26,9 @@ void Stick::Update()
 void Stick::Draw(const Renderer* renderer) const
 {
 	if (!isActive)
+	{
 		return;
+	}
 
 	Vec2 p0Pos = p0.GetPosition();
 	Vec2 p1Pos = p1.GetPosition();

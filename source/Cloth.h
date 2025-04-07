@@ -16,7 +16,7 @@ private:
 
 public:
 	Cloth() = default;
-	Cloth(int width, int height, int spacing, int startX, int startY);
+	Cloth(int numColumns, int numRows, int spacing, int startX, int startY);
 	~Cloth();
 
 	void Update(Renderer* renderer, Mouse* mouse, float deltaTime);
