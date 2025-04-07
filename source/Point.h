@@ -21,6 +21,7 @@ private:
 
 public:
 	Point() = default;
+	Point(int x, int y);
 	Point(float x, float y);
 	~Point() = default;
 

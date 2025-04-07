@@ -17,7 +17,8 @@ private:
 	Uint32 colorWhenSelected = 0xFFCC0000;
 
 public:
-	Stick(Point& p0, Point& p1, float lenght);
+	Stick(Point& p0, Point& p1, int length);
+	Stick(Point& p0, Point& p1, float length);
 	~Stick() = default;
 
 	void SetIsSelected(bool value);

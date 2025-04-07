@@ -1,6 +1,9 @@
 #include <math.h>
 #include "Point.h"
 
+Point::Point(int x, int y)
+	: Point(static_cast<float>(x), static_cast<float>(y)) {}
+
 Point::Point(float x, float y)
 {
 	pos = prevPos = initPos = Vec2(x, y);
@@ -76,7 +79,7 @@ void Point::KeepInsideView(int windowWidth, int windowHeight)
 {
 	if (pos.x > windowWidth)
 	{
-		pos.x = windowWidth;
+		pos.x = static_cast<float>(windowWidth);
 		prevPos.x = pos.x;
 	}
 	else if (pos.x < 0)
@@ -87,7 +90,7 @@ void Point::KeepInsideView(int windowWidth, int windowHeight)
 
 	if (pos.y > windowHeight)
 	{
-		pos.y = windowHeight;
+		pos.y = static_cast<float>(windowHeight);
 		prevPos.y = pos.y;
 	}
 	else if (pos.y < 0)

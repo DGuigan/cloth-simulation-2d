@@ -10,8 +10,8 @@ void Application::Setup(int clothWidth, int clothHeight, int clothSpacing)
 
 	int numColumns = clothWidth / clothSpacing;
 	int numRows = clothHeight / clothSpacing;
-	int startX = (renderer->GetWindowWidth() - clothWidth) * 0.5f;
-	int startY = renderer->GetWindowHeight() * 0.1f;
+	int startX = static_cast<int>((renderer->GetWindowWidth() - clothWidth) * 0.5f);
+	int startY = static_cast<int>(renderer->GetWindowHeight() * 0.1f);
 
 	cloth = new Cloth(numColumns, numRows, clothSpacing, startX, startY);
 

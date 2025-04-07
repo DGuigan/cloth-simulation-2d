@@ -3,7 +3,7 @@
 
 bool Renderer::Setup()
 {
-	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) 
+	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 	{
 		std::cerr << "Error initializing SDL" << std::endl;
 		return false;
@@ -13,16 +13,16 @@ bool Renderer::Setup()
 	SDL_GetCurrentDisplayMode(0, &displayMode);
 	windowWidth = displayMode.w;
 	windowHeight = displayMode.h;
-	
+
 	window = SDL_CreateWindow(NULL, 0, 0, windowWidth, windowHeight, SDL_WINDOW_BORDERLESS);
-	if (!window) 
+	if (!window)
 	{
 		std::cerr << "Error initializing SDL window" << std::endl;
 		return false;
 	}
 
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	if (!renderer) 
+	if (!renderer)
 	{
 		std::cerr << "Error initializing SDL renderer" << std::endl;
 		return false;
@@ -46,6 +46,11 @@ void Renderer::DrawLine(int x0, int y0, int x1, int y1, Uint32 color) const
 {
 	SDL_SetRenderDrawColor(renderer, color >> 16, color >> 8, color, 255);
 	SDL_RenderDrawLine(renderer, x0, y0, x1, y1);
+}
+
+void Renderer::DrawLine(Vec2 start, Vec2 end, Uint32 color) const
+{
+	DrawLine(static_cast<int>(start.x), static_cast<int>(start.y), static_cast<int>(end.x), static_cast<int>(end.y), color);
 }
 
 void Renderer::DrawPoint(int x, int y, Uint32 color) const

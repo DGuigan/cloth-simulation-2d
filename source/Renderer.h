@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL.h>
+#include "Vec2.h"
 
 class Renderer {
 private:
@@ -11,7 +12,7 @@ private:
 public:
 	Renderer() = default;
 	~Renderer();
-	
+
 	int GetWindowWidth() const { return windowWidth; }
 	int GetWindowHeight() const { return windowHeight; }
 
@@ -21,5 +22,6 @@ public:
 	void Render() const;
 
 	void DrawLine(int x0, int y0, int x1, int y1, Uint32 color) const;
+	void DrawLine(Vec2 start, Vec2 end, Uint32 color) const;
 	void DrawPoint(int x, int y, Uint32 color) const;
 };

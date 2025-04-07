@@ -2,7 +2,11 @@
 #include "Stick.h"
 #include "Point.h"
 
-Stick::Stick(Point& p0, Point& p1, float length) : p0(p0), p1(p1), length(length) {}
+Stick::Stick(Point& p0, Point& p1, int length)
+	: Stick(p0, p1, static_cast<float>(length)) {}
+
+Stick::Stick(Point& p0, Point& p1, float length)
+	: p0(p0), p1(p1), length(length) {}
 
 void Stick::Update()
 {
@@ -33,7 +37,7 @@ void Stick::Draw(const Renderer* renderer) const
 	Vec2 p0Pos = p0.GetPosition();
 	Vec2 p1Pos = p1.GetPosition();
 
-	renderer->DrawLine(p0Pos.x, p0Pos.y, p1Pos.x, p1Pos.y, isSelected ? colorWhenSelected : color);
+	renderer->DrawLine(p0Pos, p1Pos, isSelected ? colorWhenSelected : color);
 }
 
 void Stick::Break()
