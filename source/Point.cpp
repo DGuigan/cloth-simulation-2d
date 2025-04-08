@@ -23,9 +23,9 @@ void Point::SetPosition(float x, float y)
 	pos.y = y;
 }
 
-void Point::Pin()
+void Point::SetPinned(const bool pinned)
 {
-	isPinned = true;
+	isPinned = pinned;
 }
 
 float Point::UpdateSelection(InputHandler* inputHandler)

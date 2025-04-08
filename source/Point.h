@@ -40,7 +40,8 @@ public:
 
 	bool GetIsSelected() const { return isSelected; }
 
-	void Pin();
+	bool GetPinned() const { return isPinned; }
+	void SetPinned(const bool pinned);
 
 	float UpdateSelection(InputHandler* inputHandler);
 	void Update(float deltaTime, float drag, const Vec2& acceleration, float elasticity, InputHandler* inputHandler, int windowWidth, int windowHeight);

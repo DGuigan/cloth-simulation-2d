@@ -30,6 +30,13 @@ void Application::Setup(int clothWidth, int clothHeight, int clothSpacing)
 	lastUpdateTime = SDL_GetTicks();
 }
 
+void Application::Reset()
+{
+	applicationMode = ApplicationMode::Design;
+	cloth->Reset();
+}
+
+
 void Application::Input()
 {
 	SDL_Event event;
@@ -54,6 +61,11 @@ void Application::Input()
 				isRunning = false;
 				break;
 			}
+			case (SDLK_DELETE):
+			{
+				Reset();
+				break;
+			}
 			case (SDLK_1):
 			{
 				drawPoints = !drawPoints;
@@ -69,6 +81,10 @@ void Application::Input()
 				if (applicationMode != ApplicationMode::Simulate)
 				{
 					applicationMode = ApplicationMode::Simulate;
+				}
+				else
+				{
+					applicationMode = ApplicationMode::Design;
 				}
 				break;
 			}

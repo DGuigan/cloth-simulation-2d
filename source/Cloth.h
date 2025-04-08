@@ -20,12 +20,15 @@ private:
 	std::vector<Stick*> sticks;
 
 	int closestSelectedPointIndex = -1;
+	int leftPointIndex = -1;
+	int rightPointIndex = 1;
 
 public:
 	Cloth() = default;
 	Cloth(int numColumns, int numRows, int spacing, int startX, int startY);
 	~Cloth();
 
+	void Reset();
 	void Update(ApplicationMode applicationMode, InputHandler* inputHandler, Renderer* renderer, float deltaTime);
 	void UpdateSelection(InputHandler* inputHandler);
 	void UpdateSimulation(Renderer* renderer, InputHandler* inputHandler, float deltaTime);

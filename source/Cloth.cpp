@@ -3,6 +3,7 @@
 #include "Renderer.h"
 #include "Point.h"
 #include "InputHandler.h"
+#include <iostream>
 
 Cloth::Cloth(int numColumns, int numRows, int spacing, int startX, int startY)
 {
@@ -31,13 +32,34 @@ Cloth::Cloth(int numColumns, int numRows, int spacing, int startX, int startY)
 
 			if (y == 0 && x % 2 == 0)
 			{
-				point->Pin();
+				point->SetPinned(true);
 			}
 
 			points.push_back(point);
 		}
 	}
 }
+
+void Cloth::Reset()
+{
+	for (auto point : points)
+	{
+		delete point;
+	}
+
+	for (auto stick : sticks)
+	{
+		delete stick;
+	}
+
+	points.clear();
+	sticks.clear();
+
+	closestSelectedPointIndex = -1;
+	rightPointIndex = -1;
+	leftPointIndex = -1;
+}
+
 
 void Cloth::Update(ApplicationMode applicationMode, InputHandler* inputHandler, Renderer* renderer, float deltaTime)
 {
@@ -58,14 +80,27 @@ void Cloth::UpdateSelection(InputHandler* inputHandler)
 	closestSelectedPointIndex = -1;
 	float closestSelectedPointDistance = 0.f;
 
+	if (!inputHandler->GetLeftMouseButtonDown())
+	{
+		leftPointIndex = -1;
+		rightPointIndex = -1;
+	}
+
 	for (int i = 0; i < points.size(); ++i)
 	{
 		const float distance = points[i]->UpdateSelection(inputHandler);
 
 		if (distance > -1.f && (closestSelectedPointIndex == -1 || distance < closestSelectedPointDistance))
 		{
+			if (inputHandler->GetLeftMouseButtonDown())
+			{
+				leftPointIndex = rightPointIndex;
+				rightPointIndex = i;
+			}
+
 			closestSelectedPointIndex = i;
 			closestSelectedPointDistance = distance;
+
 		}
 	}
 }
@@ -95,30 +130,41 @@ void Cloth::UpdateDesign(InputHandler* inputHandler)
 		if (closestSelectedPointIndex == -1)
 		{
 			point = new Point(position.x, position.y);
+			points.push_back(point);
 		}
 		else
 		{
 			point = points[closestSelectedPointIndex];
 		}
 
-		if (inputHandler->GetLeftCtrlDown() && !points.empty())
-		{
-			Point* previousPoint = points[points.size() - 1];
-			float distance = Vec2::Distance(point->GetPosition(), previousPoint->GetPosition());
-			Stick* stick = new Stick(*point, *previousPoint, distance);
-			point->AddStick(stick);
-			previousPoint->AddStick(stick);
-			sticks.push_back(stick);
-		}
-
 		if (inputHandler->GetLeftShiftDown())
 		{
-			point->Pin();
+			point->SetPinned(!point->GetPinned());
 		}
+	}
 
-		if (closestSelectedPointIndex == -1)
+	const bool validLeftPoint = leftPointIndex != -1 && leftPointIndex < points.size();
+	const bool validRightPoint = rightPointIndex != -1 && rightPointIndex < points.size();
+	const bool uniquePoints = leftPointIndex != rightPointIndex;
+	const bool shouldConnectPoints = validLeftPoint && validRightPoint && uniquePoints;
+
+	if (validLeftPoint && validRightPoint)
+	{
+		// std::cout << "PointDbg: " << leftPointIndex << " - " << rightPointIndex << std::endl;
+	}
+
+	if (inputHandler->GetLeftMouseButtonDown() && shouldConnectPoints)
+	{
+		Point* leftPoint = points[leftPointIndex];
+		Point* rightPoint = points[rightPointIndex];
+
+		if (leftPoint && rightPoint)
 		{
-			points.push_back(point);
+			float distance = Vec2::Distance(leftPoint->GetPosition(), rightPoint->GetPosition());
+			Stick* stick = new Stick(*leftPoint, *rightPoint, distance);
+			leftPoint->AddStick(stick);
+			rightPoint->AddStick(stick);
+			sticks.push_back(stick);
 		}
 	}
 }
@@ -144,13 +190,5 @@ void Cloth::Draw(Renderer* renderer, const bool drawPoints, const bool drawStick
 
 Cloth::~Cloth()
 {
-	for (auto point : points)
-	{
-		delete point;
-	}
-
-	for (auto stick : sticks)
-	{
-		delete stick;
-	}
+	Reset();
 }

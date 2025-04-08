@@ -22,7 +22,7 @@ private:
 
 	Uint32 lastUpdateTime;
 
-	ApplicationMode applicationMode = ApplicationMode::Design;
+	ApplicationMode applicationMode = ApplicationMode::Simulate;
 
 public:
 	Application() = default;
@@ -31,6 +31,7 @@ public:
 	bool IsRunning() const;
 
 	void Setup(int clothWidth, int clothHeight, int clothSpacing);
+	void Reset();
 	void Input();
 	void Update();
 	void Render() const;
