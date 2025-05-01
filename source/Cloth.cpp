@@ -2,6 +2,7 @@
 #include "Stick.h"
 #include "Renderer.h"
 #include "Point.h"
+#include "Fan.h"
 #include "InputHandler.h"
 #include <iostream>
 
@@ -38,22 +39,32 @@ Cloth::Cloth(int numColumns, int numRows, int spacing, int startX, int startY)
 			points.push_back(point);
 		}
 	}
+
+	fans.push_back(new Fan({ 350, 400 }, { 1, 0 }, 100, 30));
+	fans.push_back(new Fan({ 1000, 700 }, { 0, -1 }, 100, 30));
+
 }
 
 void Cloth::Reset()
 {
-	for (auto point : points)
+	for (Point* point : points)
 	{
 		delete point;
 	}
 
-	for (auto stick : sticks)
+	for (Stick* stick : sticks)
 	{
 		delete stick;
 	}
 
+	for (Fan* fan : fans)
+	{
+		delete fan;
+	}
+
 	points.clear();
 	sticks.clear();
+	fans.clear();
 
 	closestSelectedPointIndex = -1;
 	rightPointIndex = -1;
@@ -110,7 +121,7 @@ void Cloth::UpdateSimulation(Renderer* renderer, InputHandler* inputHandler, flo
 	for (int i = 0; i < points.size(); i++)
 	{
 		Point* point = points[i];
-		point->Update(deltaTime, drag, gravity, elasticity, inputHandler, renderer->GetWindowWidth(), renderer->GetWindowHeight());
+		point->Update(deltaTime, drag, gravity, elasticity, &fans, inputHandler, renderer->GetWindowWidth(), renderer->GetWindowHeight());
 	}
 
 	for (int i = 0; i < sticks.size(); i++)
@@ -185,6 +196,11 @@ void Cloth::Draw(Renderer* renderer, const bool drawPoints, const bool drawStick
 		{
 			stick->Draw(renderer);
 		}
+	}
+
+	for (const Fan* fan : fans)
+	{
+		fan->Draw(renderer);
 	}
 }
 

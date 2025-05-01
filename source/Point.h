@@ -8,6 +8,7 @@
 class InputHandler;
 class Renderer;
 class Stick;
+class Fan;
 
 class Point
 {
@@ -44,6 +45,6 @@ public:
 	void SetPinned(const bool pinned);
 
 	float UpdateSelection(InputHandler* inputHandler);
-	void Update(float deltaTime, float drag, const Vec2& acceleration, float elasticity, InputHandler* inputHandler, int windowWidth, int windowHeight);
+	void Update(float deltaTime, float drag, const Vec2& acceleration, float elasticity, std::vector<Fan*>* fans, InputHandler* inputHandler, int windowWidth, int windowHeight);
 	void Draw(const Renderer* renderer) const;
 };

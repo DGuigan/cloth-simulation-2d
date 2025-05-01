@@ -8,6 +8,7 @@ class InputHandler;
 class Renderer;
 class Point;
 class Stick;
+class Fan;
 
 class Cloth
 {
@@ -18,6 +19,7 @@ private:
 
 	std::vector<Point*> points;
 	std::vector<Stick*> sticks;
+	std::vector<Fan*> fans;
 
 	int closestSelectedPointIndex = -1;
 	int leftPointIndex = -1;

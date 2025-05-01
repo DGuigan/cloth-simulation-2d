@@ -3,6 +3,9 @@
 #include "Stick.h"
 #include "InputHandler.h"
 #include "Renderer.h"
+#include "Fan.h"
+
+#include <iostream>
 
 Point::Point(int x, int y)
 	: Point(static_cast<float>(x), static_cast<float>(y)) {}
@@ -42,7 +45,7 @@ float Point::UpdateSelection(InputHandler* inputHandler)
 	return -1.f;
 }
 
-void Point::Update(float deltaTime, float drag, const Vec2& acceleration, float elasticity, InputHandler* inputHandler, int windowWidth, int windowHeight)
+void Point::Update(float deltaTime, float drag, const Vec2& acceleration, float elasticity, std::vector<Fan*>* fans, InputHandler* inputHandler, int windowWidth, int windowHeight)
 {
 	if (inputHandler->GetLeftMouseButtonDown() && isSelected)
 	{
@@ -54,6 +57,60 @@ void Point::Update(float deltaTime, float drag, const Vec2& acceleration, float 
 		if (difference.y < -elasticity) difference.y = -elasticity;
 
 		prevPos = pos - difference;
+	}
+
+	for (const Fan* fan : *fans)
+	{
+		const Vec2& fanPosition = fan->GetPosition();
+		const Vec2& fanDirection = fan->GetDirection();
+		const float fanAngle = fan->GetAngle() * (M_PI / 180.f);
+		const float fanMagnitude = fan->GetMagnitude();
+		const float fanMagnitudeSquared = fanMagnitude * fanMagnitude;
+
+		const float distanceFromFanSquared = ((pos.x - fanPosition.x) * (pos.x - fanPosition.x)) + ((pos.y - fanPosition.y) * (pos.y - fanPosition.y));
+
+		if (distanceFromFanSquared > fanMagnitudeSquared)
+		{
+			continue;
+		}
+
+		const float fanAngleWithX = atan2f(fanDirection.y, fanDirection.x);
+		float fanStartAngle = fanAngleWithX - fanAngle;
+		float fanEndAngle = fanAngleWithX + fanAngle;
+
+		if (fanStartAngle < 0)
+		{
+			fanStartAngle = (2 * M_PI) + fanStartAngle;
+		}
+
+		if (fanEndAngle < 0)
+		{
+			fanEndAngle = (2 * M_PI) + fanEndAngle;
+		}
+
+		float pointAngleInFan = atan2f(pos.y - fanPosition.y, pos.x - fanPosition.x);
+
+		if ((fanStartAngle < fanEndAngle))
+		{
+			if ((fanEndAngle < pointAngleInFan) && (pointAngleInFan < fanStartAngle))
+			{
+				continue;
+			}
+		}
+		else
+		{
+			if ((pointAngleInFan < fanStartAngle) && (fanEndAngle < pointAngleInFan))
+			{
+				continue;
+			}
+		}
+
+		const Vec2 fanToPoint = (pos - fanPosition);
+		const Vec2 fanToPointNormal = fanToPoint.Normalise();
+		const Vec2 fanRadiusThroughPoint = fanToPointNormal * fanMagnitude;
+		const Vec2 fanEdgeToPoint = fanRadiusThroughPoint - fanToPoint;
+
+		prevPos = prevPos - (fanEdgeToPoint);
 	}
 
 	if (inputHandler->GetRightMouseButtonDown() && isSelected)

@@ -57,4 +57,10 @@ struct Vec2
 		Vec2 direction = b - a;
 		return direction.Length();
 	}
+
+	Vec2 Normalise() const
+	{
+		const float length = Length();
+		return Vec2(x / length, y / length);
+	}
 };
