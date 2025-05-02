@@ -41,7 +41,7 @@ Cloth::Cloth(int numColumns, int numRows, int spacing, int startX, int startY)
 	}
 
 	fans.push_back(new Fan({ 350, 400 }, { 1, 0 }, 100, 30));
-	fans.push_back(new Fan({ 1000, 700 }, { 0, -1 }, 100, 30));
+	fans.push_back(new Fan({ 1000, 500 }, { 0, -1 }, 100, 30));
 
 }
 
@@ -128,6 +128,11 @@ void Cloth::UpdateSimulation(Renderer* renderer, InputHandler* inputHandler, flo
 	{
 		sticks[i]->Update();
 	}
+
+	for (int i = 0; i < fans.size(); i++)
+	{
+		fans[i]->Update(inputHandler);
+	}
 }
 
 void Cloth::UpdateDesign(InputHandler* inputHandler)
@@ -159,11 +164,6 @@ void Cloth::UpdateDesign(InputHandler* inputHandler)
 	const bool uniquePoints = leftPointIndex != rightPointIndex;
 	const bool shouldConnectPoints = validLeftPoint && validRightPoint && uniquePoints;
 
-	if (validLeftPoint && validRightPoint)
-	{
-		// std::cout << "PointDbg: " << leftPointIndex << " - " << rightPointIndex << std::endl;
-	}
-
 	if (inputHandler->GetLeftMouseButtonDown() && shouldConnectPoints)
 	{
 		Point* leftPoint = points[leftPointIndex];
@@ -177,6 +177,12 @@ void Cloth::UpdateDesign(InputHandler* inputHandler)
 			rightPoint->AddStick(stick);
 			sticks.push_back(stick);
 		}
+	}
+
+	if (inputHandler->GetFDown())
+	{
+		fans.push_back(new Fan(inputHandler->GetMousePosition()));
+		inputHandler->SetFDown(false);
 	}
 }
 

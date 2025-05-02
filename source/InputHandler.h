@@ -8,6 +8,8 @@ private:
 	Vec2 pos;
 	Vec2 prevPos;
 
+	Vec2 arrowKeyValues;
+
 	float maxCursorSize = 100;
 	float minCursorSize = 20;
 
@@ -20,6 +22,8 @@ private:
 
 	bool leftCtrlDown = false;
 	bool leftShiftDown = false;
+
+	bool fDown = false;
 
 public:
 	InputHandler() = default;
@@ -42,6 +46,12 @@ public:
 
 	bool GetLeftShiftDown() const { return leftShiftDown; }
 	void SetLeftShiftDown(bool isDown) { this->leftShiftDown = isDown; }
+
+	bool GetFDown() const { return fDown; }
+	void SetFDown(bool isDown) { this->fDown = isDown; }
+
+	const Vec2& GetArrowKeyStates() const { return arrowKeyValues; }
+	void SetArrowKeyState(const int index, const float value) { arrowKeyValues[index] = value; }
 
 	void IncreaseCursorSize(float increment);
 	float GetCursorSize() const { return cursorSize; }

@@ -42,6 +42,16 @@ struct Vec2
 		return result;
 	}
 
+	float& operator [](size_t i)
+	{
+		i = i % 2;
+		if (i == 0)
+		{
+			return x;
+		}
+		return y;
+	}
+
 	float LengthSquared() const
 	{
 		return (x * x) + (y * y);

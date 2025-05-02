@@ -98,6 +98,31 @@ void Application::Input()
 				inputHandler->SetLeftShiftDown(true);
 				break;
 			}
+			case (SDLK_RIGHT):
+			{
+				inputHandler->SetArrowKeyState(0, 1.f);
+				break;
+			}
+			case (SDLK_LEFT):
+			{
+				inputHandler->SetArrowKeyState(0, -1.f);
+				break;
+			}
+			case(SDLK_UP):
+			{
+				inputHandler->SetArrowKeyState(1, 1.f);
+				break;
+			}
+			case(SDLK_DOWN):
+			{
+				inputHandler->SetArrowKeyState(1, -1.f);
+				break;
+			}
+			case(SDLK_f):
+			{
+				inputHandler->SetFDown(true);
+				break;
+			}
 			}
 			break;
 		}
@@ -114,6 +139,30 @@ void Application::Input()
 			{
 				inputHandler->SetLeftShiftDown(false);
 				break;
+			}
+			case (SDLK_RIGHT):
+			{
+				inputHandler->SetArrowKeyState(0, 0.f);
+				break;
+			}
+			case (SDLK_LEFT):
+			{
+				inputHandler->SetArrowKeyState(0, 0.f);
+				break;
+			}
+			case(SDLK_UP):
+			{
+				inputHandler->SetArrowKeyState(1, 0.f);
+				break;
+			}
+			case(SDLK_DOWN):
+			{
+				inputHandler->SetArrowKeyState(1, 0.f);
+				break;
+			}
+			case(SDLK_f):
+			{
+				inputHandler->SetFDown(false);
 			}
 			}
 			break;
