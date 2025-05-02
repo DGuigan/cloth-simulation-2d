@@ -25,6 +25,9 @@ private:
 
 	bool fDown = false;
 
+	bool plusDown = false;
+	bool minusDown = false;
+
 public:
 	InputHandler() = default;
 	~InputHandler() = default;
@@ -49,6 +52,12 @@ public:
 
 	bool GetFDown() const { return fDown; }
 	void SetFDown(bool isDown) { this->fDown = isDown; }
+
+	bool GetPlusDown() const { return plusDown; }
+	void SetPlusDown(bool isDown) { this->plusDown = isDown; }
+
+	bool GetMinusDown() const { return minusDown; }
+	void SetMinusDown(bool isDown) { this->minusDown = isDown; }
 
 	const Vec2& GetArrowKeyStates() const { return arrowKeyValues; }
 	void SetArrowKeyState(const int index, const float value) { arrowKeyValues[index] = value; }

@@ -123,6 +123,16 @@ void Application::Input()
 				inputHandler->SetFDown(true);
 				break;
 			}
+			case(SDLK_EQUALS):
+			{
+				inputHandler->SetPlusDown(true);
+				break;
+			}
+			case(SDLK_MINUS):
+			{
+				inputHandler->SetMinusDown(true);
+				break;
+			}
 			}
 			break;
 		}
@@ -163,6 +173,17 @@ void Application::Input()
 			case(SDLK_f):
 			{
 				inputHandler->SetFDown(false);
+				break;
+			}
+			case(SDLK_EQUALS):
+			{
+				inputHandler->SetPlusDown(false);
+				break;
+			}
+			case(SDLK_MINUS):
+			{
+				inputHandler->SetMinusDown(false);
+				break;
 			}
 			}
 			break;

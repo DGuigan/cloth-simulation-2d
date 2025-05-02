@@ -119,5 +119,12 @@ void Fan::Update(InputHandler* inputHandler)
 		directionAngle += arrowKeyStates.x * 0.1;
 
 		direction = { cosf(directionAngle), sinf(directionAngle) };
+
+		const float magnitudeDelta = inputHandler->GetPlusDown() ? 1.0f : (inputHandler->GetMinusDown() ? -1.f : 0.f);
+		magnitude += magnitudeDelta;
+		if (magnitude < 0.f)
+		{
+			magnitude = 0.f;
+		}
 	}
 }
