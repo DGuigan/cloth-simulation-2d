@@ -9,6 +9,7 @@ class InputHandler;
 class Renderer;
 class Stick;
 class Fan;
+class Cloth;
 
 class Point
 {
@@ -25,6 +26,8 @@ private:
 
 	Uint32 color = 0xFF0048E3;
 	Uint32 colorWhenSelected = 0xFFCC0000;
+
+	Uint32 hitpoints = 100;
 
 	void KeepInsideView(int width, int height);
 
@@ -45,6 +48,8 @@ public:
 	void SetPinned(const bool pinned);
 
 	float UpdateSelection(InputHandler* inputHandler);
-	void Update(float deltaTime, float drag, const Vec2& acceleration, float elasticity, std::vector<Fan*>* fans, InputHandler* inputHandler, int windowWidth, int windowHeight);
+	void Update(float deltaTime, float drag, const Vec2& acceleration, float elasticity, std::vector<Fan*>* fans, InputHandler* inputHandler, Cloth* cloth, int windowWidth, int windowHeight);
 	void Draw(const Renderer* renderer) const;
+
+	void BreakPoint(Cloth* cloth);
 };

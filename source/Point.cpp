@@ -4,6 +4,7 @@
 #include "InputHandler.h"
 #include "Renderer.h"
 #include "Fan.h"
+#include "Cloth.h"
 
 #include <iostream>
 
@@ -45,8 +46,13 @@ float Point::UpdateSelection(InputHandler* inputHandler)
 	return -1.f;
 }
 
-void Point::Update(float deltaTime, float drag, const Vec2& acceleration, float elasticity, std::vector<Fan*>* fans, InputHandler* inputHandler, int windowWidth, int windowHeight)
+void Point::Update(float deltaTime, float drag, const Vec2& acceleration, float elasticity, std::vector<Fan*>* fans, InputHandler* inputHandler, Cloth* cloth, int windowWidth, int windowHeight)
 {
+	if (!isActive)
+	{
+		return;
+	}
+
 	if (inputHandler->GetLeftMouseButtonDown() && isSelected)
 	{
 		Vec2 difference = inputHandler->GetMousePosition() - inputHandler->GetPreviousMousePosition();
@@ -78,14 +84,7 @@ void Point::Update(float deltaTime, float drag, const Vec2& acceleration, float 
 
 	if (inputHandler->GetRightMouseButtonDown() && isSelected)
 	{
-		for (Stick* stick : sticks)
-		{
-			if (stick != nullptr)
-			{
-				stick->Break();
-			}
-		}
-		isActive = false;
+		BreakPoint(cloth);
 	}
 
 	if (isPinned) {
@@ -98,6 +97,11 @@ void Point::Update(float deltaTime, float drag, const Vec2& acceleration, float 
 	pos = newPos;
 
 	KeepInsideView(windowWidth, windowHeight);
+
+	if (hitpoints == 0)
+	{
+		BreakPoint(cloth);
+	}
 }
 
 void Point::Draw(const Renderer* renderer) const
@@ -110,27 +114,52 @@ void Point::Draw(const Renderer* renderer) const
 	renderer->DrawPoint(GetPosition(), isSelected ? colorWhenSelected : color);
 }
 
+void Point::BreakPoint(Cloth* cloth)
+{
+	for (Stick* stick : sticks)
+	{
+		if (stick != nullptr)
+		{
+			stick->Break();
+		}
+	}
+	isActive = false;
+	cloth->OnPointRemoved();
+}
+
+
 void Point::KeepInsideView(int windowWidth, int windowHeight)
 {
+	bool wasOutsideView = false;
+
 	if (pos.x > windowWidth)
 	{
 		pos.x = static_cast<float>(windowWidth);
 		prevPos.x = pos.x;
+		wasOutsideView = true;
 	}
 	else if (pos.x < 0)
 	{
 		pos.x = 0;
 		prevPos.x = pos.x;
+		wasOutsideView = true;
 	}
 
 	if (pos.y > windowHeight)
 	{
 		pos.y = static_cast<float>(windowHeight);
 		prevPos.y = pos.y;
+		wasOutsideView = true;
 	}
 	else if (pos.y < 0)
 	{
 		pos.y = 0;
 		prevPos.y = pos.y;
+		wasOutsideView = true;
+	}
+
+	if (wasOutsideView && 0U < hitpoints)
+	{
+		hitpoints--;
 	}
 }

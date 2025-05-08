@@ -21,11 +21,19 @@ void Stick::Update()
 
 	Vec2 diff = p0Pos - p1Pos;
 	float dist = sqrtf(diff.x * diff.x + diff.y * diff.y);
-	float diffFactor = (length - dist) / dist;
+	float diffFactor = dist == 0.f ? 0.f : (length - dist) / dist;
 	Vec2 offset = diff * diffFactor * 0.5f;
 
 	p0.SetPosition(p0Pos.x + offset.x, p0Pos.y + offset.y);
 	p1.SetPosition(p1Pos.x - offset.x, p1Pos.y - offset.y);
+
+	// The scale of the original length this constraint can reach before breaking
+	const float elasticity = 11.f;
+
+	if (length * elasticity < dist)
+	{
+		this->Break();
+	}
 }
 
 void Stick::Draw(const Renderer* renderer) const

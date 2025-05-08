@@ -21,6 +21,8 @@ private:
 	std::vector<Stick*> sticks;
 	std::vector<Fan*> fans;
 
+	int activePoints = 0;
+
 	int closestSelectedPointIndex = -1;
 	int leftPointIndex = -1;
 	int rightPointIndex = 1;
@@ -36,4 +38,9 @@ public:
 	void UpdateSimulation(Renderer* renderer, InputHandler* inputHandler, float deltaTime);
 	void UpdateDesign(InputHandler* inputHandler);
 	void Draw(Renderer* renderer, const bool drawPoints, const bool drawSticks) const;
+	void CreateRectangularCloth(int numColumns, int numRows, int spacing, int startX, int startY);
+	void OnPointRemoved();
+	int GetNumActivePoints() const {
+		return activePoints;
+	};
 };

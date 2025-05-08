@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Renderer.h"
 
+
 bool Renderer::Setup()
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
@@ -71,6 +72,25 @@ void Renderer::DrawPoint(int x, int y, Uint32 color) const
 void Renderer::DrawPoint(Vec2 position, Uint32 color) const
 {
 	DrawPoint(static_cast<int>(position.x), static_cast<int>(position.y), color);
+}
+
+void Renderer::DrawRect(Vec2 position, Vec2 dimensions, Uint32 color, const bool fill) const
+{
+	SDL_SetRenderDrawColor(renderer, color >> 16, color >> 8, color, 255);
+
+	SDL_FRect rect;
+	rect.x = position.x;
+	rect.y = position.y;
+	rect.w = dimensions.x;
+	rect.h = dimensions.y;
+	if (fill)
+	{
+		SDL_RenderFillRectF(renderer, &rect);
+	}
+	else
+	{
+		SDL_RenderDrawRectF(renderer, &rect);
+	}
 }
 
 Renderer::~Renderer()

@@ -8,10 +8,20 @@
 
 Cloth::Cloth(int numColumns, int numRows, int spacing, int startX, int startY)
 {
+	CreateRectangularCloth(numColumns, numRows, spacing, startX, startY);
+
+	fans.push_back(new Fan({ 350, 400 }, { 1, 0 }, 100, 30));
+	fans.push_back(new Fan({ 1000, 500 }, { 0, -1 }, 100, 30));
+
+}
+
+void Cloth::CreateRectangularCloth(int numColumns, int numRows, int spacing, int startX, int startY)
+{
 	for (int y = 0; y <= numRows; y++) {
 		for (int x = 0; x <= numColumns; x++)
 		{
 			Point* point = new Point(startX + x * spacing, startY + y * spacing);
+			activePoints++;
 
 			if (x != 0)
 			{
@@ -31,7 +41,7 @@ Cloth::Cloth(int numColumns, int numRows, int spacing, int startX, int startY)
 				sticks.push_back(s);
 			}
 
-			if (y == 0 && x % 2 == 0)
+			if (y == 0 && x % 2 == 0 && false)
 			{
 				point->SetPinned(true);
 			}
@@ -39,11 +49,8 @@ Cloth::Cloth(int numColumns, int numRows, int spacing, int startX, int startY)
 			points.push_back(point);
 		}
 	}
-
-	fans.push_back(new Fan({ 350, 400 }, { 1, 0 }, 100, 30));
-	fans.push_back(new Fan({ 1000, 500 }, { 0, -1 }, 100, 30));
-
 }
+
 
 void Cloth::Reset()
 {
@@ -69,12 +76,14 @@ void Cloth::Reset()
 	closestSelectedPointIndex = -1;
 	rightPointIndex = -1;
 	leftPointIndex = -1;
+
+	activePoints = 0;
 }
 
 
 void Cloth::Update(ApplicationMode applicationMode, InputHandler* inputHandler, Renderer* renderer, float deltaTime)
 {
-	UpdateSelection(inputHandler);
+	//UpdateSelection(inputHandler);
 
 	if (applicationMode == ApplicationMode::Simulate)
 	{
@@ -121,7 +130,7 @@ void Cloth::UpdateSimulation(Renderer* renderer, InputHandler* inputHandler, flo
 	for (int i = 0; i < points.size(); i++)
 	{
 		Point* point = points[i];
-		point->Update(deltaTime, drag, gravity, elasticity, &fans, inputHandler, renderer->GetWindowWidth(), renderer->GetWindowHeight());
+		point->Update(deltaTime, drag, gravity, elasticity, &fans, inputHandler, this, renderer->GetWindowWidth(), renderer->GetWindowHeight());
 	}
 
 	for (int i = 0; i < sticks.size(); i++)
@@ -147,6 +156,7 @@ void Cloth::UpdateDesign(InputHandler* inputHandler)
 		{
 			point = new Point(position.x, position.y);
 			points.push_back(point);
+			activePoints++;
 		}
 		else
 		{
@@ -209,6 +219,19 @@ void Cloth::Draw(Renderer* renderer, const bool drawPoints, const bool drawStick
 		fan->Draw(renderer);
 	}
 }
+
+void Cloth::OnPointRemoved()
+{
+	if (0 < activePoints)
+	{
+		activePoints--;
+	}
+	else
+	{
+		SDL_assert(false);
+	}
+}
+
 
 Cloth::~Cloth()
 {

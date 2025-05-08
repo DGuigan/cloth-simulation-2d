@@ -8,6 +8,7 @@
 class InputHandler;
 class Renderer;
 class Cloth;
+class ScoreManager;
 
 struct Application
 {
@@ -15,10 +16,13 @@ private:
 	Renderer* renderer = nullptr;
 	InputHandler* inputHandler = nullptr;
 	Cloth* cloth = nullptr;
+	ScoreManager* scoreManager = nullptr;
 
 	bool isRunning = false;
 	bool drawPoints = true;
 	bool drawSticks = true;
+
+	Uint32 score = 0;
 
 	Uint32 lastUpdateTime;
 

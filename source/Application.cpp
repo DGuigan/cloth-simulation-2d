@@ -3,11 +3,13 @@
 #include "Renderer.h"
 #include "InputHandler.h"
 #include "Cloth.h"
+#include "ScoreManager.h"
 
 void Application::Setup(int clothWidth, int clothHeight, int clothSpacing)
 {
 	renderer = new Renderer();
 	inputHandler = new InputHandler();
+	scoreManager = new ScoreManager(3000000, { 100, 500 }, { 50, 300 });
 
 	isRunning = renderer->Setup();
 
@@ -33,9 +35,10 @@ void Application::Setup(int clothWidth, int clothHeight, int clothSpacing)
 void Application::Reset()
 {
 	applicationMode = ApplicationMode::Design;
+	score = 0;
 	cloth->Reset();
+	scoreManager->Reset();
 }
-
 
 void Application::Input()
 {
@@ -103,7 +106,17 @@ void Application::Input()
 				inputHandler->SetArrowKeyState(0, 1.f);
 				break;
 			}
+			case (SDLK_d):
+			{
+				inputHandler->SetArrowKeyState(0, 1.f);
+				break;
+			}
 			case (SDLK_LEFT):
+			{
+				inputHandler->SetArrowKeyState(0, -1.f);
+				break;
+			}
+			case (SDLK_a):
 			{
 				inputHandler->SetArrowKeyState(0, -1.f);
 				break;
@@ -113,7 +126,17 @@ void Application::Input()
 				inputHandler->SetArrowKeyState(1, 1.f);
 				break;
 			}
+			case(SDLK_w):
+			{
+				inputHandler->SetArrowKeyState(1, 1.f);
+				break;
+			}
 			case(SDLK_DOWN):
+			{
+				inputHandler->SetArrowKeyState(1, -1.f);
+				break;
+			}
+			case(SDLK_s):
 			{
 				inputHandler->SetArrowKeyState(1, -1.f);
 				break;
@@ -155,7 +178,17 @@ void Application::Input()
 				inputHandler->SetArrowKeyState(0, 0.f);
 				break;
 			}
+			case (SDLK_d):
+			{
+				inputHandler->SetArrowKeyState(0, 0.f);
+				break;
+			}
 			case (SDLK_LEFT):
+			{
+				inputHandler->SetArrowKeyState(0, 0.f);
+				break;
+			}
+			case (SDLK_a):
 			{
 				inputHandler->SetArrowKeyState(0, 0.f);
 				break;
@@ -165,7 +198,17 @@ void Application::Input()
 				inputHandler->SetArrowKeyState(1, 0.f);
 				break;
 			}
+			case(SDLK_w):
+			{
+				inputHandler->SetArrowKeyState(1, 0.f);
+				break;
+			}
 			case(SDLK_DOWN):
+			{
+				inputHandler->SetArrowKeyState(1, 0.f);
+				break;
+			}
+			case(SDLK_s):
 			{
 				inputHandler->SetArrowKeyState(1, 0.f);
 				break;
@@ -244,9 +287,16 @@ void Application::Update()
 	Uint32 currentTime = SDL_GetTicks();
 	float deltaTime = (currentTime - lastUpdateTime) / 1000.0f;
 
+	if (scoreManager->GetTargetScoreReached())
+	{
+		return;
+	}
+
 	cloth->Update(applicationMode, inputHandler, renderer, deltaTime);
 
 	lastUpdateTime = currentTime;
+
+	scoreManager->IncrementCurrentScore(cloth->GetNumActivePoints());
 }
 
 void Application::Render() const
@@ -254,6 +304,8 @@ void Application::Render() const
 	renderer->ClearScreen(0xFF000816);
 
 	cloth->Draw(renderer, drawPoints, drawSticks);
+
+	scoreManager->Draw(renderer);
 
 	renderer->Render();
 }
@@ -269,4 +321,5 @@ void Application::Destroy()
 	delete inputHandler;
 	delete renderer;
 	delete cloth;
+	delete scoreManager;
 }
