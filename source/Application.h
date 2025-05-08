@@ -4,11 +4,13 @@
 #include <SDL.h>
 
 #include "Enums.h"
+#include "LevelData.h"
 
 class InputHandler;
 class Renderer;
 class Cloth;
 class ScoreManager;
+class LevelManager;
 
 struct Application
 {
@@ -17,14 +19,13 @@ private:
 	InputHandler* inputHandler = nullptr;
 	Cloth* cloth = nullptr;
 	ScoreManager* scoreManager = nullptr;
+	LevelManager* levelManager = nullptr;
 
 	bool isRunning = false;
 	bool drawPoints = true;
 	bool drawSticks = true;
 
-	Uint32 score = 0;
-
-	Uint32 lastUpdateTime;
+	Uint32 lastUpdateTime = 0;
 
 	ApplicationMode applicationMode = ApplicationMode::Simulate;
 

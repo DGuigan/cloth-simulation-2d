@@ -4,19 +4,50 @@
 #include "Point.h"
 #include "Fan.h"
 #include "InputHandler.h"
+#include "LevelData.h"
+#include "Enums.h"
+#include "SDL.h"
+#include "LevelManager.h"
+
 #include <iostream>
 
 Cloth::Cloth(int numColumns, int numRows, int spacing, int startX, int startY)
 {
 	CreateRectangularCloth(numColumns, numRows, spacing, startX, startY);
-
-	fans.push_back(new Fan({ 350, 400 }, { 1, 0 }, 100, 30));
-	fans.push_back(new Fan({ 1000, 500 }, { 0, -1 }, 100, 30));
-
 }
 
-void Cloth::CreateRectangularCloth(int numColumns, int numRows, int spacing, int startX, int startY)
+void Cloth::AddWeave(const ClothData& clothData)
 {
+	switch (clothData.clothType)
+	{
+	case (ClothType::Rectangular):
+	{
+		CreateRectangularCloth(clothData.dimensions.x, clothData.dimensions.y, clothData.spacing, clothData.position.x, clothData.position.y);
+		break;
+	}
+	case (ClothType::Circular):
+	{
+		SDL_assert(false);
+		break;
+	}
+	default:
+	{
+		SDL_assert(false);
+		break;
+	}
+	}
+}
+
+void Cloth::AddFan(const FanData& fanData)
+{
+	fans.push_back(new Fan({ fanData.position, fanData.direction, fanData.magnitude, fanData.angle }));
+}
+
+void Cloth::CreateRectangularCloth(float width, float height, int spacing, int startX, int startY)
+{
+	int numColumns = width / spacing;
+	int numRows = height / spacing;
+
 	for (int y = 0; y <= numRows; y++) {
 		for (int x = 0; x <= numColumns; x++)
 		{
@@ -196,13 +227,32 @@ void Cloth::UpdateDesign(InputHandler* inputHandler)
 	}
 }
 
-void Cloth::Draw(Renderer* renderer, const bool drawPoints, const bool drawSticks) const
+void Cloth::Draw(Renderer* renderer, LevelManager* levelManager, const bool drawPoints, const bool drawSticks) const
 {
+	Uint32 renderColor;
+
+	switch (levelManager->GetCurrentLevelState())
+	{
+	case (LevelState::Completed):
+	{
+		renderColor = completedColor;
+		break;
+	}
+	case (LevelState::Failed):
+	{
+		renderColor = failedColor;
+		break;
+	}
+	default:
+		renderColor = defaultColor;
+		break;
+	}
+
 	if (drawPoints)
 	{
 		for (const Point* point : points)
 		{
-			point->Draw(renderer);
+			point->Draw(renderer, renderColor);
 		}
 	}
 
@@ -210,7 +260,7 @@ void Cloth::Draw(Renderer* renderer, const bool drawPoints, const bool drawStick
 	{
 		for (const Stick* stick : sticks)
 		{
-			stick->Draw(renderer);
+			stick->Draw(renderer, renderColor);
 		}
 	}
 

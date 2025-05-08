@@ -36,7 +36,7 @@ void Stick::Update()
 	}
 }
 
-void Stick::Draw(const Renderer* renderer) const
+void Stick::Draw(const Renderer* renderer, const Uint32 color) const
 {
 	if (!isActive)
 	{
@@ -48,7 +48,7 @@ void Stick::Draw(const Renderer* renderer) const
 
 	bool hasSelectedPoint = p0.GetIsSelected() || p1.GetIsSelected();
 
-	renderer->DrawLine(p0Pos, p1Pos, hasSelectedPoint ? colorWhenSelected : color);
+	renderer->DrawLine(p0Pos, p1Pos, color);
 }
 
 void Stick::Break()

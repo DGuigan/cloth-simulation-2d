@@ -4,38 +4,28 @@
 #include "InputHandler.h"
 #include "Cloth.h"
 #include "ScoreManager.h"
+#include "LevelData.h"
+#include "LevelManager.h"
 
 void Application::Setup(int clothWidth, int clothHeight, int clothSpacing)
 {
 	renderer = new Renderer();
 	inputHandler = new InputHandler();
-	scoreManager = new ScoreManager(3000000, { 100, 500 }, { 50, 300 });
+	levelManager = new LevelManager();
+	scoreManager = new ScoreManager({ 100, 500 }, { 50, 300 });
+	cloth = new Cloth();
 
 	isRunning = renderer->Setup();
 
-	int numColumns = clothWidth / clothSpacing;
-	int numRows = clothHeight / clothSpacing;
-	int startX = static_cast<int>((renderer->GetWindowWidth() - clothWidth) * 0.5f);
-	int startY = static_cast<int>(renderer->GetWindowHeight() * 0.1f);
+	levelManager->InitLevels(renderer);
 
-	if (applicationMode == ApplicationMode::Simulate)
-	{
-		// build a default cloth if immediately simulating
-		cloth = new Cloth(numColumns, numRows, clothSpacing, startX, startY);
-	}
-	else if (applicationMode == ApplicationMode::Design)
-	{
-		// empty cloth to draw on
-		cloth = new Cloth();
-	}
+	levelManager->LoadLevel(0, this, cloth, scoreManager);
 
 	lastUpdateTime = SDL_GetTicks();
 }
 
 void Application::Reset()
 {
-	applicationMode = ApplicationMode::Design;
-	score = 0;
 	cloth->Reset();
 	scoreManager->Reset();
 }
@@ -154,6 +144,11 @@ void Application::Input()
 			case(SDLK_MINUS):
 			{
 				inputHandler->SetMinusDown(true);
+				break;
+			}
+			case(SDLK_r):
+			{
+				levelManager->LoadLevel(-1, this, cloth, scoreManager);
 				break;
 			}
 			}
@@ -286,26 +281,26 @@ void Application::Update()
 {
 	Uint32 currentTime = SDL_GetTicks();
 	float deltaTime = (currentTime - lastUpdateTime) / 1000.0f;
-
-	if (scoreManager->GetTargetScoreReached())
-	{
-		return;
-	}
-
-	cloth->Update(applicationMode, inputHandler, renderer, deltaTime);
-
 	lastUpdateTime = currentTime;
 
-	scoreManager->IncrementCurrentScore(cloth->GetNumActivePoints());
+	if (levelManager->GetCurrentLevelState() == LevelState::InProgress)
+	{
+		cloth->Update(applicationMode, inputHandler, renderer, deltaTime);
+
+		scoreManager->IncrementCurrentScore(cloth->GetNumActivePoints());
+	}
+
+	levelManager->Update(this, cloth, scoreManager, deltaTime);
+
 }
 
 void Application::Render() const
 {
 	renderer->ClearScreen(0xFF000816);
 
-	cloth->Draw(renderer, drawPoints, drawSticks);
+	cloth->Draw(renderer, levelManager, drawPoints, drawSticks);
 
-	scoreManager->Draw(renderer);
+	scoreManager->Draw(renderer, levelManager);
 
 	renderer->Render();
 }
@@ -322,4 +317,5 @@ void Application::Destroy()
 	delete renderer;
 	delete cloth;
 	delete scoreManager;
+	delete levelManager;
 }

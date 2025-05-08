@@ -104,14 +104,14 @@ void Point::Update(float deltaTime, float drag, const Vec2& acceleration, float 
 	}
 }
 
-void Point::Draw(const Renderer* renderer) const
+void Point::Draw(const Renderer* renderer, const Uint32 color) const
 {
 	if (!isActive)
 	{
 		return;
 	}
 
-	renderer->DrawPoint(GetPosition(), isSelected ? colorWhenSelected : color);
+	renderer->DrawPoint(GetPosition(), color);
 }
 
 void Point::BreakPoint(Cloth* cloth)

@@ -23,6 +23,6 @@ public:
 	~Stick() = default;
 
 	void Update();
-	void Draw(const Renderer* renderer) const;
+	void Draw(const Renderer* renderer, const Uint32 color) const;
 	void Break();
 };

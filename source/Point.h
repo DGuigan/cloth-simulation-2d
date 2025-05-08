@@ -10,6 +10,7 @@ class Renderer;
 class Stick;
 class Fan;
 class Cloth;
+class LevelManager;
 
 class Point
 {
@@ -23,9 +24,6 @@ private:
 
 	bool isSelected = false;
 	bool isActive = true;
-
-	Uint32 color = 0xFF0048E3;
-	Uint32 colorWhenSelected = 0xFFCC0000;
 
 	Uint32 hitpoints = 100;
 
@@ -49,7 +47,7 @@ public:
 
 	float UpdateSelection(InputHandler* inputHandler);
 	void Update(float deltaTime, float drag, const Vec2& acceleration, float elasticity, std::vector<Fan*>* fans, InputHandler* inputHandler, Cloth* cloth, int windowWidth, int windowHeight);
-	void Draw(const Renderer* renderer) const;
+	void Draw(const Renderer* renderer, const Uint32 color) const;
 
 	void BreakPoint(Cloth* cloth);
 };
