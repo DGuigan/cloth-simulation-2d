@@ -4,6 +4,7 @@
 #include "Application.h"
 #include "Cloth.h"
 #include "ScoreManager.h"
+#include "TimeManager.h"
 
 void LevelManager::InitLevels(const Renderer* renderer)
 {
@@ -16,6 +17,7 @@ void LevelManager::InitLevels(const Renderer* renderer)
 		float clothY = renderer->GetWindowHeight() * 0.1f;
 
 		level1.targetScore = 3000000;
+		level1.timeLimit = 15.f;
 		level1.clothData.push_back({ ClothType::Rectangular, 10.f, {clothWidth, clothHeight}, {clothX, clothY} });
 
 		level1.fanData.push_back({ { 350, 400 }, { 1, 0 }, 100, 30 });
@@ -30,7 +32,8 @@ void LevelManager::InitLevels(const Renderer* renderer)
 		float clothX = (renderer->GetWindowWidth() - clothWidth) * 0.5f;
 		float clothY = renderer->GetWindowHeight() * 0.1f;
 
-		level2.targetScore = 3000000;
+		level2.targetScore = 2000000;
+		level2.timeLimit = 20.f;
 		level2.clothData.push_back({ ClothType::Rectangular, 10.f, {clothWidth, clothHeight}, {clothX, clothY} });
 
 		level2.fanData.push_back({ { 350, 600 }, { 1, 1 }, 100, 30 });
@@ -38,7 +41,7 @@ void LevelManager::InitLevels(const Renderer* renderer)
 	}
 }
 
-void LevelManager::LoadLevel(const int levelIndex, Application* application, Cloth* cloth, ScoreManager* scoreManager)
+void LevelManager::LoadLevel(const int levelIndex, Application* application, Cloth* cloth, ScoreManager* scoreManager, TimeManager* timeManager)
 {
 	application->Reset();
 
@@ -55,6 +58,8 @@ void LevelManager::LoadLevel(const int levelIndex, Application* application, Clo
 
 	scoreManager->SetTargetScore(level.targetScore);
 
+	timeManager->SetTimeLimit(level.timeLimit);
+
 	for (const ClothData& clothData : level.clothData)
 	{
 		cloth->AddWeave(clothData);
@@ -66,7 +71,7 @@ void LevelManager::LoadLevel(const int levelIndex, Application* application, Clo
 	}
 }
 
-void LevelManager::Update(Application* application, Cloth* cloth, ScoreManager* scoreManager, const float deltaTime)
+void LevelManager::Update(Application* application, Cloth* cloth, ScoreManager* scoreManager, TimeManager* timeManager, const float deltaTime)
 {
 	if (currentLevelState == LevelState::InProgress)
 	{
@@ -74,7 +79,7 @@ void LevelManager::Update(Application* application, Cloth* cloth, ScoreManager* 
 		{
 			currentLevelState = LevelState::Completed;
 		}
-		else if (cloth->GetNumActivePoints() == 0)
+		else if (cloth->GetNumActivePoints() == 0 || timeManager->GetTimeLimitReached())
 		{
 			currentLevelState = LevelState::Failed;
 		}
@@ -100,7 +105,7 @@ void LevelManager::Update(Application* application, Cloth* cloth, ScoreManager* 
 				currentLevelIndex = (currentLevelIndex + 1) % levelData.size();
 			}
 
-			LoadLevel(currentLevelIndex, application, cloth, scoreManager);
+			LoadLevel(currentLevelIndex, application, cloth, scoreManager, timeManager);
 		}
 	}
 }

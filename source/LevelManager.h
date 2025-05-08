@@ -7,9 +7,11 @@
 #include <vector>
 
 class Renderer;
-class Application;
 class Cloth;
 class ScoreManager;
+class TimeManager;
+
+struct Application;
 
 class LevelManager
 {
@@ -32,9 +34,9 @@ private:
 public:
 	void InitLevels(const Renderer* renderer);
 
-	void LoadLevel(const int levelIndex, Application* application, Cloth* cloth, ScoreManager* scoreManager);
+	void LoadLevel(const int levelIndex, Application* application, Cloth* cloth, ScoreManager* scoreManager, TimeManager* timeManager);
 
-	void Update(Application* application, Cloth* cloth, ScoreManager* scoreManager, const float deltaTime);
+	void Update(Application* application, Cloth* cloth, ScoreManager* scoreManager, TimeManager* timeManager, const float deltaTime);
 
 	LevelState GetCurrentLevelState() const { return currentLevelState; };
 };

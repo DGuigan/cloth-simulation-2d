@@ -6,20 +6,22 @@
 #include "ScoreManager.h"
 #include "LevelData.h"
 #include "LevelManager.h"
+#include "TimeManager.h"
 
 void Application::Setup(int clothWidth, int clothHeight, int clothSpacing)
 {
 	renderer = new Renderer();
+	isRunning = renderer->Setup();
+
 	inputHandler = new InputHandler();
 	levelManager = new LevelManager();
 	scoreManager = new ScoreManager({ 100, 500 }, { 50, 300 });
+	timeManager = new TimeManager({ static_cast<float>(renderer->GetWindowWidth() - 150), 500 }, { 50, 300 });
 	cloth = new Cloth();
-
-	isRunning = renderer->Setup();
 
 	levelManager->InitLevels(renderer);
 
-	levelManager->LoadLevel(0, this, cloth, scoreManager);
+	levelManager->LoadLevel(0, this, cloth, scoreManager, timeManager);
 
 	lastUpdateTime = SDL_GetTicks();
 }
@@ -28,6 +30,7 @@ void Application::Reset()
 {
 	cloth->Reset();
 	scoreManager->Reset();
+	timeManager->Reset();
 }
 
 void Application::Input()
@@ -148,7 +151,7 @@ void Application::Input()
 			}
 			case(SDLK_r):
 			{
-				levelManager->LoadLevel(-1, this, cloth, scoreManager);
+				levelManager->LoadLevel(-1, this, cloth, scoreManager, timeManager);
 				break;
 			}
 			}
@@ -288,9 +291,11 @@ void Application::Update()
 		cloth->Update(applicationMode, inputHandler, renderer, deltaTime);
 
 		scoreManager->IncrementCurrentScore(cloth->GetNumActivePoints());
+
+		timeManager->Update(deltaTime);
 	}
 
-	levelManager->Update(this, cloth, scoreManager, deltaTime);
+	levelManager->Update(this, cloth, scoreManager, timeManager, deltaTime);
 
 }
 
@@ -301,6 +306,8 @@ void Application::Render() const
 	cloth->Draw(renderer, levelManager, drawPoints, drawSticks);
 
 	scoreManager->Draw(renderer, levelManager);
+
+	timeManager->Draw(renderer, levelManager);
 
 	renderer->Render();
 }
@@ -318,4 +325,5 @@ void Application::Destroy()
 	delete cloth;
 	delete scoreManager;
 	delete levelManager;
+	delete timeManager;
 }

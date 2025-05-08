@@ -27,6 +27,7 @@ public:
 	LevelData() = default;
 
 	int targetScore = 0;
+	float timeLimit = 0.f;
 
 	std::vector<ClothData> clothData;
 	std::vector<FanData> fanData;

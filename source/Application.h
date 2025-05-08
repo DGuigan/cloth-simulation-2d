@@ -11,6 +11,7 @@ class Renderer;
 class Cloth;
 class ScoreManager;
 class LevelManager;
+class TimeManager;
 
 struct Application
 {
@@ -20,6 +21,7 @@ private:
 	Cloth* cloth = nullptr;
 	ScoreManager* scoreManager = nullptr;
 	LevelManager* levelManager = nullptr;
+	TimeManager* timeManager = nullptr;
 
 	bool isRunning = false;
 	bool drawPoints = true;
