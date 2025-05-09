@@ -31,3 +31,9 @@ void InputHandler::OnFrameStart()
 {
 	leftMouseButtonClickedThisFrame = false;
 }
+
+void InputHandler::Reset()
+{
+	leftMouseButtonClickedThisFrame = false;
+	selectedFan = nullptr;
+}

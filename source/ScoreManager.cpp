@@ -26,25 +26,7 @@ void ScoreManager::Draw(const Renderer* renderer, const LevelManager* levelManag
 	const float scoreProgress = static_cast<float>(currentScore) / static_cast<float>(targetScore);
 	const float scoreBarHeight = scoreProgress < 1.f ? dimensions.y * scoreProgress : dimensions.y;
 
-	Uint32 renderColor;
-
-	switch (levelManager->GetCurrentLevelState())
-	{
-	case (LevelState::Failed):
-	{
-		renderColor = failedColor;
-		break;
-	}
-	case (LevelState::Completed):
-	{
-		renderColor = completedColor;
-		break;
-	}
-	default:
-	{
-		renderColor = inProgressColor;
-	}
-	}
+	const Uint32 renderColor = levelManager->GetRenderColor(RenderElementType::UI);
 
 	renderer->DrawRect(position, dimensions, renderColor, false);
 	renderer->DrawRect({ position.x, position.y + (dimensions.y - scoreBarHeight) }, { dimensions.x, scoreBarHeight }, renderColor, true);

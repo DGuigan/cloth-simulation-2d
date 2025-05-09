@@ -15,10 +15,6 @@ private:
 	Vec2 position;
 	Vec2 dimensions;
 
-	Uint32 inProgressColor = 0xFCE803;
-	Uint32 completedColor = 0x8CFC03;
-	Uint32 failedColor = 0xFC1C03;
-
 public:
 	ScoreManager(const Vec2 position, const Vec2 dimensions);
 

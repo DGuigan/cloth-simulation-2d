@@ -2,6 +2,8 @@
 
 #include "Vec2.h"
 
+class Fan;
+
 class InputHandler
 {
 private:
@@ -27,6 +29,8 @@ private:
 
 	bool plusDown = false;
 	bool minusDown = false;
+
+	const Fan* selectedFan = nullptr;
 
 public:
 	InputHandler() = default;
@@ -65,5 +69,10 @@ public:
 	void IncreaseCursorSize(float increment);
 	float GetCursorSize() const { return cursorSize; }
 
+	const Fan* GetSelectedfan() const { return selectedFan; }
+	void SetSelectedFan(const Fan* inSelectedfan) { selectedFan = inSelectedfan; }
+
 	void OnFrameStart();
+
+	void Reset();
 };

@@ -2,12 +2,6 @@
 
 #include <SDL.h>
 
-enum class ApplicationMode : Uint8
-{
-	Design,
-	Simulate,
-};
-
 enum class ClothType : Uint8
 {
 	Rectangular,
@@ -16,8 +10,15 @@ enum class ClothType : Uint8
 
 enum class LevelState : Uint8
 {
-	Waiting,
+	Design,
 	InProgress,
 	Completed,
 	Failed,
+};
+
+enum class RenderElementType : Uint8
+{
+	UI,
+	Background,
+	Cloth
 };

@@ -22,6 +22,14 @@ void LevelManager::InitLevels(const Renderer* renderer)
 
 		level1.fanData.push_back({ { 350, 400 }, { 1, 0 }, 100, 30 });
 		level1.fanData.push_back({ { 1000, 500 }, { 0, -1 }, 100, 30 });
+
+		level1.colorData = {
+			tealColor,
+			blackColor,
+			blueColor,
+			greenColor,
+			redColor
+		};
 	}
 
 	{ // LEVEL 2 
@@ -38,6 +46,14 @@ void LevelManager::InitLevels(const Renderer* renderer)
 
 		level2.fanData.push_back({ { 350, 600 }, { 1, 1 }, 100, 30 });
 		level2.fanData.push_back({ { 1000, 500 }, { 0, -1 }, 100, 30 });
+
+		level2.colorData = {
+			blackColor,
+			whiteColor,
+			blackColor,
+			greenColor,
+			redColor
+		};
 	}
 }
 
@@ -45,8 +61,7 @@ void LevelManager::LoadLevel(const int levelIndex, Application* application, Clo
 {
 	application->Reset();
 
-	currentLevelState = LevelState::Waiting;
-	timeSpentWaitingForLevelStart = 0.f;
+	currentLevelState = LevelState::Design;
 	timeSpentWaitingForLevelEnd = 0.f;
 
 	if (levelIndex != -1)
@@ -71,6 +86,14 @@ void LevelManager::LoadLevel(const int levelIndex, Application* application, Clo
 	}
 }
 
+void LevelManager::StartLevel()
+{
+	if (GetCurrentLevelState() == LevelState::Design)
+	{
+		currentLevelState = LevelState::InProgress;
+	}
+}
+
 void LevelManager::Update(Application* application, Cloth* cloth, ScoreManager* scoreManager, TimeManager* timeManager, const float deltaTime)
 {
 	if (currentLevelState == LevelState::InProgress)
@@ -85,16 +108,7 @@ void LevelManager::Update(Application* application, Cloth* cloth, ScoreManager* 
 		}
 	}
 
-	if (currentLevelState == LevelState::Waiting)
-	{
-		timeSpentWaitingForLevelStart += deltaTime;
-
-		if (secondsBeforeLevelStart <= timeSpentWaitingForLevelStart)
-		{
-			currentLevelState = LevelState::InProgress;
-		}
-	}
-	else if (currentLevelState == LevelState::Completed || currentLevelState == LevelState::Failed)
+	if (currentLevelState == LevelState::Completed || currentLevelState == LevelState::Failed)
 	{
 		timeSpentWaitingForLevelEnd += deltaTime;
 
@@ -102,10 +116,60 @@ void LevelManager::Update(Application* application, Cloth* cloth, ScoreManager* 
 		{
 			if (currentLevelState == LevelState::Completed)
 			{
-				currentLevelIndex = (currentLevelIndex + 1) % levelData.size();
+				IncrementLevelIndex();
 			}
 
 			LoadLevel(currentLevelIndex, application, cloth, scoreManager, timeManager);
 		}
 	}
 }
+
+Uint32 LevelManager::GetRenderColor(const RenderElementType renderElementType) const
+{
+	const LevelColorData& colorData = levelData[currentLevelIndex].colorData;
+
+	if (renderElementType == RenderElementType::Background)
+	{
+		return colorData.backgroundColor;
+	}
+
+	switch (GetCurrentLevelState())
+	{
+	case (LevelState::Completed):
+	{
+		return colorData.successColor;
+	}
+	case (LevelState::Failed):
+	{
+		return colorData.failureColor;
+	}
+	default:
+		switch (renderElementType)
+		{
+		case (RenderElementType::UI):
+		{
+			return colorData.uiColor;
+		}
+		case (RenderElementType::Cloth):
+		{
+			return colorData.clothColor;
+		}
+		default:
+		{
+			return 0xFFFFFF;
+		}
+		}
+	}
+}
+
+void LevelManager::LoadNextLevel(Application* application, Cloth* cloth, ScoreManager* scoreManager, TimeManager* timeManager)
+{
+	IncrementLevelIndex();
+	LoadLevel(-1, application, cloth, scoreManager, timeManager);
+}
+
+void LevelManager::IncrementLevelIndex()
+{
+	currentLevelIndex = (currentLevelIndex + 1) % levelData.size();
+}
+

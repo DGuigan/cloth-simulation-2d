@@ -2,6 +2,7 @@
 #include "Renderer.h"
 #include "Point.h"
 #include "InputHandler.h"
+#include "LevelManager.h"
 
 #include <math.h>
 
@@ -72,7 +73,7 @@ bool Fan::IsPointInFan(const Point& point) const
 }
 
 
-void Fan::Draw(const Renderer* renderer) const
+void Fan::Draw(const Renderer* renderer, LevelManager* levelManager) const
 {
 	const Vec2 start = position;
 	const float angleRadians = angle * (M_PI / 180.f);
@@ -85,13 +86,21 @@ void Fan::Draw(const Renderer* renderer) const
 	const Vec2 leftVector = { cosf(leftVectorAngle), sinf(leftVectorAngle) };
 	const Vec2 rightVector = { cosf(rightVectorAngle), sinf(rightVectorAngle) };
 
-	Uint32 drawColor = isSelected ? selectedColor : color;
-	renderer->DrawLine(start, start + (leftVector * magnitude), drawColor);
-	renderer->DrawLine(start, start + (rightVector * magnitude), drawColor);
+	Uint32 renderColor = levelManager->GetRenderColor(RenderElementType::UI);
+
+	renderer->DrawLine(start, start + (leftVector * magnitude), renderColor);
+	renderer->DrawLine(start, start + (rightVector * magnitude), renderColor);
 }
 
 void Fan::Update(InputHandler* inputHandler)
 {
+	const Fan* selectedFan = inputHandler->GetSelectedfan();
+
+	if (selectedFan != nullptr && this != selectedFan)
+	{
+		return;
+	}
+
 	const Vec2& mousePos = inputHandler->GetMousePosition();
 
 	const float distToMouse = Vec2::Distance(mousePos, position);
@@ -101,6 +110,8 @@ void Fan::Update(InputHandler* inputHandler)
 
 	if (isSelected)
 	{
+		inputHandler->SetSelectedFan(this);
+
 		position = mousePos;
 
 		const Vec2& arrowKeyStates = inputHandler->GetArrowKeyStates();
@@ -126,5 +137,9 @@ void Fan::Update(InputHandler* inputHandler)
 		{
 			magnitude = 0.f;
 		}
+	}
+	else
+	{
+		inputHandler->SetSelectedFan(nullptr);
 	}
 }

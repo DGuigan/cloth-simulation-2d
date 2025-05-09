@@ -31,6 +31,7 @@ void Application::Reset()
 	cloth->Reset();
 	scoreManager->Reset();
 	timeManager->Reset();
+	inputHandler->Reset();
 }
 
 void Application::Input()
@@ -74,14 +75,7 @@ void Application::Input()
 			}
 			case (SDLK_RETURN):
 			{
-				if (applicationMode != ApplicationMode::Simulate)
-				{
-					applicationMode = ApplicationMode::Simulate;
-				}
-				else
-				{
-					applicationMode = ApplicationMode::Design;
-				}
+				levelManager->StartLevel();
 				break;
 			}
 			case (SDLK_LCTRL):
@@ -152,6 +146,11 @@ void Application::Input()
 			case(SDLK_r):
 			{
 				levelManager->LoadLevel(-1, this, cloth, scoreManager, timeManager);
+				break;
+			}
+			case(SDLK_TAB):
+			{
+				levelManager->LoadNextLevel(this, cloth, scoreManager, timeManager);
 				break;
 			}
 			}
@@ -286,10 +285,12 @@ void Application::Update()
 	float deltaTime = (currentTime - lastUpdateTime) / 1000.0f;
 	lastUpdateTime = currentTime;
 
-	if (levelManager->GetCurrentLevelState() == LevelState::InProgress)
-	{
-		cloth->Update(applicationMode, inputHandler, renderer, deltaTime);
+	const LevelState levelState = levelManager->GetCurrentLevelState();
 
+	cloth->Update(levelState, inputHandler, renderer, deltaTime);
+
+	if (levelState == LevelState::InProgress)
+	{
 		scoreManager->IncrementCurrentScore(cloth->GetNumActivePoints());
 
 		timeManager->Update(deltaTime);
@@ -301,7 +302,7 @@ void Application::Update()
 
 void Application::Render() const
 {
-	renderer->ClearScreen(0xFF000816);
+	renderer->ClearScreen(levelManager->GetRenderColor(RenderElementType::Background));
 
 	cloth->Draw(renderer, levelManager, drawPoints, drawSticks);
 

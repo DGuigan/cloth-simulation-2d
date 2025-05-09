@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "SDL.h"
 #include "Vec2.h"
 #include "Enums.h"
 
@@ -21,6 +22,15 @@ struct FanData
 	float angle = 0.f;
 };
 
+struct LevelColorData
+{
+	Uint32 uiColor = 0x000000;
+	Uint32 backgroundColor = 0x000000;
+	Uint32 clothColor = 0x0000000;
+	Uint32 successColor = 0x000000;
+	Uint32 failureColor = 0x000000;
+};
+
 struct LevelData
 {
 public:
@@ -31,4 +41,6 @@ public:
 
 	std::vector<ClothData> clothData;
 	std::vector<FanData> fanData;
+
+	LevelColorData colorData;
 };

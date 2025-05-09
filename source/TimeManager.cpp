@@ -10,25 +10,7 @@ void TimeManager::Draw(const Renderer* renderer, const LevelManager* levelManage
 	const float timeProgress = 1.f - (timeElapsed / timeLimit);
 	const float progressBarHeight = timeProgress < 1.f ? dimensions.y * timeProgress : dimensions.y;
 
-	Uint32 renderColor;
-
-	switch (levelManager->GetCurrentLevelState())
-	{
-	case (LevelState::Failed):
-	{
-		renderColor = failedColor;
-		break;
-	}
-	case (LevelState::Completed):
-	{
-		renderColor = completedColor;
-		break;
-	}
-	default:
-	{
-		renderColor = inProgressColor;
-	}
-	}
+	const Uint32 renderColor = levelManager->GetRenderColor(RenderElementType::UI);
 
 	renderer->DrawRect(position, dimensions, renderColor, false);
 	renderer->DrawRect({ position.x, position.y + (dimensions.y - progressBarHeight) }, { dimensions.x, progressBarHeight }, renderColor, true);

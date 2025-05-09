@@ -6,18 +6,16 @@
 class Renderer;
 class Point;
 class InputHandler;
+class LevelManager;
 
 class Fan
 {
 private:
-	Vec2 position;
-	Vec2 direction;
-	float magnitude;
-	float angle;
-	bool isSelected;
-
-	Uint32 color = 0x03FCA5;
-	Uint32 selectedColor = 0x32A8A2;
+	Vec2 position = { 0.f, 0.f };
+	Vec2 direction = { 0.f, 0.f };
+	float magnitude = 0.f;
+	float angle = 0.f;
+	bool isSelected = false;
 
 public:
 	Fan(const Vec2 position, const Vec2 direction, const float magnitude, const float angle);
@@ -31,7 +29,7 @@ public:
 
 	bool IsPointInFan(const Point& point) const;
 
-	void Draw(const Renderer* renderer) const;
+	void Draw(const Renderer* renderer, LevelManager* levelManager) const;
 
 	void Update(InputHandler* inputHandler);
 };

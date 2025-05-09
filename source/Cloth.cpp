@@ -112,15 +112,15 @@ void Cloth::Reset()
 }
 
 
-void Cloth::Update(ApplicationMode applicationMode, InputHandler* inputHandler, Renderer* renderer, float deltaTime)
+void Cloth::Update(LevelState levelState, InputHandler* inputHandler, Renderer* renderer, float deltaTime)
 {
 	//UpdateSelection(inputHandler);
 
-	if (applicationMode == ApplicationMode::Simulate)
+	if (levelState == LevelState::InProgress)
 	{
 		UpdateSimulation(renderer, inputHandler, deltaTime);
 	}
-	else if (applicationMode == ApplicationMode::Design)
+	else if (levelState == LevelState::Design)
 	{
 		UpdateDesign(inputHandler);
 	}
@@ -169,6 +169,11 @@ void Cloth::UpdateSimulation(Renderer* renderer, InputHandler* inputHandler, flo
 		sticks[i]->Update();
 	}
 
+	UpdateFans(inputHandler);
+}
+
+void Cloth::UpdateFans(InputHandler* inputHandler)
+{
 	for (int i = 0; i < fans.size(); i++)
 	{
 		fans[i]->Update(inputHandler);
@@ -176,6 +181,21 @@ void Cloth::UpdateSimulation(Renderer* renderer, InputHandler* inputHandler, flo
 }
 
 void Cloth::UpdateDesign(InputHandler* inputHandler)
+{
+	// Not currently allowing points/fans to be placed by user at design time but could be a cool gamemode
+	// 
+	// UpdateClothDesign(inputHandler);
+
+	//if (inputHandler->GetFDown())
+	//{
+	//	fans.push_back(new Fan(inputHandler->GetMousePosition()));
+	//	inputHandler->SetFDown(false);
+	//}
+
+	UpdateFans(inputHandler);
+}
+
+void Cloth::UpdateClothDesign(InputHandler* inputHandler)
 {
 	if (inputHandler->GetLeftMouseButtonJustClicked())
 	{
@@ -219,40 +239,17 @@ void Cloth::UpdateDesign(InputHandler* inputHandler)
 			sticks.push_back(stick);
 		}
 	}
-
-	if (inputHandler->GetFDown())
-	{
-		fans.push_back(new Fan(inputHandler->GetMousePosition()));
-		inputHandler->SetFDown(false);
-	}
 }
 
 void Cloth::Draw(Renderer* renderer, LevelManager* levelManager, const bool drawPoints, const bool drawSticks) const
 {
-	Uint32 renderColor;
-
-	switch (levelManager->GetCurrentLevelState())
-	{
-	case (LevelState::Completed):
-	{
-		renderColor = completedColor;
-		break;
-	}
-	case (LevelState::Failed):
-	{
-		renderColor = failedColor;
-		break;
-	}
-	default:
-		renderColor = defaultColor;
-		break;
-	}
+	const Uint32 clothRenderColor = levelManager->GetRenderColor(RenderElementType::Cloth);
 
 	if (drawPoints)
 	{
 		for (const Point* point : points)
 		{
-			point->Draw(renderer, renderColor);
+			point->Draw(renderer, clothRenderColor);
 		}
 	}
 
@@ -260,13 +257,13 @@ void Cloth::Draw(Renderer* renderer, LevelManager* levelManager, const bool draw
 	{
 		for (const Stick* stick : sticks)
 		{
-			stick->Draw(renderer, renderColor);
+			stick->Draw(renderer, clothRenderColor);
 		}
 	}
 
 	for (const Fan* fan : fans)
 	{
-		fan->Draw(renderer);
+		fan->Draw(renderer, levelManager);
 	}
 }
 

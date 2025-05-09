@@ -29,8 +29,6 @@ private:
 
 	Uint32 lastUpdateTime = 0;
 
-	ApplicationMode applicationMode = ApplicationMode::Simulate;
-
 public:
 	Application() = default;
 	~Application() = default;
