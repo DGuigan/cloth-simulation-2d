@@ -31,6 +31,8 @@ private:
 	const Uint32 whiteColor = 0xEDF2ED;
 	const Uint32 tealColor = 0x03FCA5;
 	const Uint32 blackColor = 0xFF000816;
+	const Uint32 greyColor = 0x8A949E;
+	const Uint32 yellowColor = 0xF5E72C;
 
 	void IncrementLevelIndex();
 

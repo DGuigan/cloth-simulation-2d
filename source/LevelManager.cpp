@@ -55,6 +55,33 @@ void LevelManager::InitLevels(const Renderer* renderer)
 			redColor
 		};
 	}
+
+	{
+		LevelData& level3 = levelData.emplace_back();
+
+		float clothWidth = 750.f;
+		float clothHeight = 250.f;
+		float clothX = renderer->GetWindowWidth() * 0.5f;
+		float clothY = renderer->GetWindowHeight() * 0.2f;
+
+		level3.targetScore = 2000000;
+		level3.timeLimit = 20.f;
+
+		level3.clothData.push_back({ ClothType::Circular, 10.f, {500.f, 175.f}, {renderer->GetWindowWidth() * 0.5f, renderer->GetWindowHeight() * 0.5f} });
+		level3.clothData.push_back({ ClothType::Circular, 10.f, {250.f, 75.f}, {renderer->GetWindowWidth() * 0.2f, renderer->GetWindowHeight() * 0.3f} });
+		level3.clothData.push_back({ ClothType::Circular, 10.f, {250.f, 75.f}, {renderer->GetWindowWidth() * 0.8f, renderer->GetWindowHeight() * 0.3f} });
+
+		level3.fanData.push_back({ { 350, 600 }, { 1, 1 }, 100, 30 });
+		level3.fanData.push_back({ { 1000, 500 }, { 0, -1 }, 100, 30 });
+
+		level3.colorData = {
+			yellowColor,
+			greyColor,
+			blueColor,
+			greenColor,
+			redColor
+		};
+	}
 }
 
 void LevelManager::LoadLevel(const int levelIndex, Application* application, Cloth* cloth, ScoreManager* scoreManager, TimeManager* timeManager)

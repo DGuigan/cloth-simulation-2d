@@ -39,7 +39,12 @@ public:
 
 	void AddWeave(const ClothData& clothData);
 	void AddFan(const FanData& fanData);
+	void AddStick(const int pointAIndex, const int pointBIndex);
+	void AddStick(Point* pointA, const int pointBIndex);
+	void AddStick(Point* pointA, Point* pointB);
 	void CreateRectangularCloth(float width, float height, int spacing, int startX, int startY);
+	void CreateSingleCircularCloth(float width, float height, int spacing, int centerX, int centerY);
+	void CreateCircularCloth(float width, float height, int spacing, int centerX, int centerY);
 	void Reset();
 	void Update(LevelState levelState, InputHandler* inputHandler, Renderer* renderer, float deltaTime);
 	void UpdateSelection(InputHandler* inputHandler);
